@@ -50,6 +50,7 @@ struct HomeView: View {
                 Text("Daily")
                 Image("chevron_right")
             }
+            .font(.EBGaramond19)
             .onTapGesture {
                 //TODO: move to edit view
             }
@@ -59,6 +60,7 @@ struct HomeView: View {
                     Text("🍵    Meditation paper + warm tea.")
                     Text("️🎧    30-minute walk outside.")
                 }
+                .font(.cabin15)
                 Spacer()
             }
             .padding(.horizontal, 17)
@@ -70,6 +72,7 @@ struct HomeView: View {
     var quick: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Quick")
+                .font(.EBGaramond19)
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
                     checklistItem(content: "Reply to John’s proposal email.", isChecked: true)
@@ -84,6 +87,7 @@ struct HomeView: View {
     var today: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Today")
+                .font(.EBGaramond19)
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
                     checklistItem(content: "Attend all three morning classes.", isChecked: true)
@@ -114,22 +118,28 @@ struct HomeView: View {
         @State private var isItToday: Bool = false
         
         var body: some View {
-            ZStack(alignment: .bottom) {
-                VStack(spacing: 6) {
+            ZStack(alignment: .center) {
+                if isItToday {
+                    Image("dateBackground")
+                        .offset(y: 5)
+                }
+                VStack(spacing: 2) {
                     Text(day)
+                        .font(.charisSIL17)
                     Text(weekday)
+                        .font(.facultyGlyphic10)
+                        .kerning(0.25)
                 }
                 .foregroundStyle(isItToday ? .white : .black)
-                .padding(.horizontal, 2)
-                .padding(.top, 10)
-                .padding(.bottom, 15)
-                .background(isItToday ? Image("dateBackground").resizable().foregroundStyle(.clear) : Image(systemName: "chevron.compact.down").foregroundStyle(.clear))
+                
                 if let selectedDate = selectedDate {
                     if Calendar.current.isDate(selectedDate, inSameDayAs: date) && !isItToday {
                         Image("ellipse")
+                            .offset(y: 30)
                     }
                 }
             }
+            .frame(width: 33)
             .onAppear {
                 let dateFormatter = DateFormatter()
                 dateFormatter.locale = Locale(identifier: "en_US")
@@ -167,6 +177,7 @@ struct HomeView: View {
                 }
                 
                 Text(content)
+                    .font(.cabin15)
 //                    .fixedSize(horizontal: true, vertical: false)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 14)
@@ -174,6 +185,7 @@ struct HomeView: View {
 
                 if let time = time {
                     Text(time)
+                        .font(.charisSIL12)
                         .foregroundColor(.gray)
                 }
             }
