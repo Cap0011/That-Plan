@@ -28,12 +28,11 @@ struct HomeView: View {
                         }
                 }
             }
-            .padding(.top, 20)
+            .padding(.vertical, 20)
             
             ScrollView(.vertical) {
                 VStack {
                     daily
-                        .padding(.top, 20)
                     quick
                         .padding(.top, 34)
                     today
@@ -48,7 +47,9 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 5) {
                 Text("Daily")
+                    .foregroundStyle(.dailygreen)
                 Image("chevron_right")
+                    .offset(y: 2)
             }
             .font(.EBGaramond19)
             .onTapGesture {
@@ -61,11 +62,13 @@ struct HomeView: View {
                     Text("️🎧    30-minute walk outside.")
                 }
                 .font(.cabin15)
+                .foregroundStyle(.gray800)
+                
                 Spacer()
             }
             .padding(.horizontal, 17)
             .padding(.vertical, 18)
-            .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.gray))
+            .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
             .padding(.top, 10)
         }
     }
@@ -73,11 +76,14 @@ struct HomeView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Quick")
                 .font(.EBGaramond19)
+                .foregroundStyle(.gray900)
+            
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
                     checklistItem(content: "Reply to John’s proposal email.", isChecked: true)
                     checklistItem(content: "Order Zero Coke and juice on Amazon.", isChecked: false)
                 }
+                
                 Spacer()
             }
             .padding(.top, 20)
@@ -130,7 +136,7 @@ struct HomeView: View {
                         .font(.facultyGlyphic10)
                         .kerning(0.25)
                 }
-                .foregroundStyle(isItToday ? .white : .black)
+                .foregroundStyle(isItToday ? .white : .unselected)
                 
                 if let selectedDate = selectedDate {
                     if Calendar.current.isDate(selectedDate, inSameDayAs: date) && !isItToday {
@@ -178,6 +184,7 @@ struct HomeView: View {
                 
                 Text(content)
                     .font(.cabin15)
+                    .foregroundStyle(.black)
 //                    .fixedSize(horizontal: true, vertical: false)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 14)
@@ -186,7 +193,7 @@ struct HomeView: View {
                 if let time = time {
                     Text(time)
                         .font(.charisSIL12)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.timegray)
                 }
             }
         }
