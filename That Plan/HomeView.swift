@@ -72,6 +72,7 @@ struct HomeView: View {
             .padding(.top, 10)
         }
     }
+    
     var quick: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Quick")
@@ -93,7 +94,9 @@ struct HomeView: View {
     var today: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Today")
+                .foregroundStyle(.black)
                 .font(.EBGaramond19)
+            
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
                     checklistItem(content: "Attend all three morning classes.", isChecked: true)
@@ -101,6 +104,7 @@ struct HomeView: View {
                     checklistItem(content: "Attend biology tutoring for Leo.", isChecked: false, time: "03:30 pm")
                     checklistItem(content: "Do Chapter 6 Spanish shadowing, write 5 new expressions.", isChecked: false, time: "11:00 pm")
                 }
+                
                 Spacer()
             }
             .padding(.top, 20)
@@ -162,39 +166,39 @@ struct HomeView: View {
             }
         }
     }
-    
-    struct checklistItem: View {
-        let content: String
-        let isChecked: Bool
-        let time: String?
-        
-        init(content: String, isChecked: Bool, time: String? = nil) {
-            self.content = content
-            self.isChecked = isChecked
-            self.time = time
-        }
-        
-        var body: some View {
-            HStack(spacing: 0) {
-                if isChecked {
-                    Image("checked")
-                } else {
-                    Image("unchecked")
-                }
-                
-                Text(content)
-                    .font(.cabin15)
-                    .foregroundStyle(.black)
-//                    .fixedSize(horizontal: true, vertical: false)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, 14)
-                    .padding(.trailing, 20)
+}
 
-                if let time = time {
-                    Text(time)
-                        .font(.charisSIL12)
-                        .foregroundColor(.timegray)
-                }
+struct checklistItem: View {
+    let content: String
+    let isChecked: Bool
+    let time: String?
+    
+    init(content: String, isChecked: Bool, time: String? = nil) {
+        self.content = content
+        self.isChecked = isChecked
+        self.time = time
+    }
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            if isChecked {
+                Image("checked")
+            } else {
+                Image("unchecked")
+            }
+            
+            Text(content)
+                .font(.cabin15)
+                .foregroundStyle(.black)
+//                    .fixedSize(horizontal: true, vertical: false)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 14)
+                .padding(.trailing, 20)
+
+            if let time = time {
+                Text(time)
+                    .font(.charisSIL12)
+                    .foregroundColor(.timegray)
             }
         }
     }
