@@ -13,7 +13,9 @@ struct NoteView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 9) {
-                TaskItemView(type: "Information", content: "Make bed without checking Reels.")
+                NavigationLink(destination: NoteDetailView()) {
+                    TaskItemView(type: "Information", content: "Make bed without checking Reels.")
+                }
                 TaskItemView(type: "Information", content: "Make bed without checking Reels.")
                 TaskItemView(type: "Future Goal", content: "Make bed without checking Reels.")
             }
@@ -25,7 +27,8 @@ struct NoteView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                Image("back")
+                Image(systemName: "chevron.backward")
+                    .foregroundStyle(.backgray)
                     .frame(width: 40, height: 40)
                     .contentShape(Rectangle())
                     .onTapGesture {
