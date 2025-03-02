@@ -9,6 +9,7 @@ import Foundation
 
 struct Task {
     let id: UUID
+    var type: String
     var contents: String
     var date: Date?
     var hour: Int?
