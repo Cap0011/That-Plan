@@ -20,35 +20,39 @@ struct PlannerView: View {
     let weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("My Planner")
-                    .font(.EBGaramond21)
-                
-                Spacer()
-                
-                ZStack {
-                    Image("note")
-                    RoundedRectangle(cornerRadius: 1)
-                        .frame(width: 6, height: 2)
-                        .offset(y: -1)
-                }
-            }
-            
-            planner
-                .padding(.top, 25)
-                .padding(.bottom, 22)
-            
-            ScrollView(showsIndicators: false) {
-                VStack {
-                    quick
+        NavigationView {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    Text("My Planner")
+                        .font(.EBGaramond21)
                     
-                    today
-                        .padding(.top, 38)
+                    Spacer()
+                    
+                    NavigationLink(destination: NoteView()) {
+                        ZStack {
+                            Image("note")
+                            RoundedRectangle(cornerRadius: 1)
+                                .frame(width: 6, height: 2)
+                                .offset(y: -1)
+                        }
+                    }
+                }
+                
+                planner
+                    .padding(.top, 25)
+                    .padding(.bottom, 22)
+                
+                ScrollView(showsIndicators: false) {
+                    VStack {
+                        quick
+                        
+                        today
+                            .padding(.top, 38)
+                    }
                 }
             }
+            .padding(.horizontal, 20)
         }
-        .padding(.horizontal, 20)
     }
     
     var planner: some View {
