@@ -61,7 +61,7 @@ struct AddView: View {
     
     var history: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
+            LazyVStack(alignment: .leading, spacing: 28) {
                 ForEach(dates, id: \.self) { date in
                     HistoryItemView(date: date, tasks: tasks.filter { Calendar.current.isDate($0.date ?? Date(), inSameDayAs: date) })
                 }
@@ -91,7 +91,7 @@ struct AddView: View {
                         .offset(y: 3)
                 }
                 
-                VStack(alignment: .leading, spacing: 9) {
+                LazyVStack(alignment: .leading, spacing: 9) {
                     ForEach(tasks, id: \.id) { task in
                         TaskItemView(type: task.type, content: task.contents)
                     }

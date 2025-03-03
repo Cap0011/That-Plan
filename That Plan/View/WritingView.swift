@@ -28,11 +28,10 @@ struct WritingView: View {
                 .padding(.horizontal, 16)
                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
             
-            finishButton
-                .padding(.top, 24)
-                .onTapGesture {
-                    // TODO: Move to SortingView
-                }
+            NavigationLink(destination: SortingView(text: text)) {
+                finishButton
+                    .padding(.top, 24)
+            }
             
             Spacer()
         }
@@ -62,29 +61,20 @@ struct WritingView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                Text("Next")
-                    .font(.EBGaramond19)
-                    .foregroundStyle(.nextgreen)
-                    .onTapGesture {
-                        // Move to SortingView
-                    }
+                NavigationLink(destination: SortingView(text: text)) {
+                    Text("Next")
+                        .font(.EBGaramond19)
+                        .foregroundStyle(.nextgreen)
+                }
             }
         }
     }
     
     var finishButton: some View {
         ZStack {
-            ZStack(alignment: .trailing) {
-                RoundedRectangle(cornerRadius: 12)
-                    .frame(height: 50)
-                    .foregroundStyle(.monthgreen)
-                
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12))
-                    .frame(width: 23, height: 23)
-                    .foregroundStyle(.white)
-                    .padding(.trailing, 13)
-            }
+            RoundedRectangle(cornerRadius: 12)
+                .frame(height: 50)
+                .foregroundStyle(.monthgreen)
             
             Text("Finish")
                 .font(.EBGaramond19)
