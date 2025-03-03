@@ -19,11 +19,10 @@ struct AddView: View {
                 .foregroundStyle(.black)
                 .padding(.top, 15)
             
-            addButton
-                .padding(.top, 27)
-                .onTapGesture {
-                    //TODO: Move to WritingView
-                }
+            NavigationLink(destination: WritingView()) {
+                addButton
+                    .padding(.top, 27)
+            }
             
             Text("History")
                 .font(.EBGaramond19)
