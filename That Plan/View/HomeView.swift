@@ -11,36 +11,44 @@ struct HomeView: View {
     @State var selectedDate: Date?
     
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Image(systemName: "globe")
-                    .imageScale(.large)
-                    .foregroundStyle(.tint)
-                Spacer()
-                Image("add")
-            }
-            
-            HStack(spacing: 20) {
-                ForEach(getDatesfromThisWeek(), id: \.self) { date in
-                    dateSelector(date: date, selectedDate: $selectedDate)
-                        .onTapGesture {
-                            selectedDate = date
-                        }
+        NavigationView {
+            VStack(spacing: 0) {
+                HStack {
+                    Image(systemName: "globe")
+                        .imageScale(.large)
+                        .foregroundStyle(.tint)
+                    
+                    Spacer()
+                    
+                    NavigationLink(destination: AddView()) {
+                        Image("add")
+                            .frame(width: 23, height: 23)
+                            .clipShape(Rectangle())
+                    }
+                }
+                
+                HStack(spacing: 20) {
+                    ForEach(getDatesfromThisWeek(), id: \.self) { date in
+                        dateSelector(date: date, selectedDate: $selectedDate)
+                            .onTapGesture {
+                                selectedDate = date
+                            }
+                    }
+                }
+                .padding(.vertical, 20)
+                
+                ScrollView(.vertical) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        daily
+                        quick
+                            .padding(.top, 34)
+                        today
+                            .padding(.top, 40)
+                    }
                 }
             }
-            .padding(.vertical, 20)
-            
-            ScrollView(.vertical) {
-                VStack {
-                    daily
-                    quick
-                        .padding(.top, 34)
-                    today
-                        .padding(.top, 40)
-                }
-            }
+            .padding(.horizontal, 20)
         }
-        .padding(.horizontal, 20)
     }
     
     var daily: some View {

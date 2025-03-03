@@ -22,17 +22,18 @@ struct Task {
 
 extension Task {
     static let quickTasks: [Task] = [
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Buy groceries", date: Date(), hour: 10, minute: 30, isNotificationOn: true, isCompleted: false),
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Call mom", date: Date(), hour: 15, minute: 0, isNotificationOn: true, isCompleted: false),
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Reply to emails", date: Date(), hour: 9, minute: 45, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Take medicine", date: Date(), hour: 8, minute: 0, isNotificationOn: true, isCompleted: true),
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Check schedule", date: Date(), hour: 7, minute: 30, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Charge phone", date: Date(), hour: 22, minute: 0, isNotificationOn: false, isCompleted: true),
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Clean desk", date: Date(), hour: 20, minute: 0, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Make coffee", date: Date(), hour: 7, minute: 15, isNotificationOn: false, isCompleted: true),
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Read article", date: Date(), hour: 17, minute: 45, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.quick.text, contents: "Listen to music", date: Date(), hour: 18, minute: 30, isNotificationOn: false, isCompleted: true)
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Buy groceries", date: Calendar.current.date(byAdding: .day, value: -2, to: Date()), hour: 10, minute: 30, isNotificationOn: true, isCompleted: false),
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Call mom", date: Calendar.current.date(byAdding: .day, value: 1, to: Date()), hour: 15, minute: 0, isNotificationOn: true, isCompleted: false),
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Reply to emails", date: Calendar.current.date(byAdding: .day, value: -3, to: Date()), hour: 9, minute: 45, isNotificationOn: false, isCompleted: false),
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Take medicine", date: Calendar.current.date(byAdding: .day, value: 0, to: Date()), hour: 8, minute: 0, isNotificationOn: true, isCompleted: true),
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Check schedule", date: Calendar.current.date(byAdding: .day, value: -5, to: Date()), hour: 7, minute: 30, isNotificationOn: false, isCompleted: false),
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Charge phone", date: Calendar.current.date(byAdding: .day, value: 3, to: Date()), hour: 22, minute: 0, isNotificationOn: false, isCompleted: true),
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Clean desk", date: Calendar.current.date(byAdding: .day, value: -4, to: Date()), hour: 20, minute: 0, isNotificationOn: false, isCompleted: false),
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Make coffee", date: Calendar.current.date(byAdding: .day, value: 2, to: Date()), hour: 7, minute: 15, isNotificationOn: false, isCompleted: true),
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Read article", date: Calendar.current.date(byAdding: .day, value: -5, to: Date()), hour: 17, minute: 45, isNotificationOn: false, isCompleted: false),
+        Task(id: UUID(), type: TaskType.quick.text, contents: "Listen to music", date: Calendar.current.date(byAdding: .day, value: -5, to: Date()), hour: 18, minute: 30, isNotificationOn: false, isCompleted: true)
     ]
+
     
     static let informationTasks: [Task] = [
         Task(id: UUID(), type: TaskType.information.text, contents: "Read company updates", date: Date(), hour: 9, minute: 0, isNotificationOn: false, isCompleted: false),
