@@ -18,4 +18,27 @@ enum TaskType {
         case .future: return "Future Goal"
         }
     }
+    
+    var description: String {
+        switch self {
+        case .quick: return "Quick: Please select the most suitable category for this task."
+        case .todo: return "Todo: Please select the most suitable category for this task."
+        case .daily: return "Daily: Please select the most suitable category for this task."
+        case .information: return "Information: Please select the most suitable category for this task."
+        case .shortterm: return "Short term: Please select the most suitable category for this task."
+        case .future: return "Future: Please select the most suitable category for this task."
+        }
+    }
+    
+    static func fromText(_ text: String) -> TaskType? {
+        switch text.lowercased() {
+        case "quick": return .quick
+        case "to-do": return .todo
+        case "daily routine": return .daily
+        case "information": return .information
+        case "short-term goal": return .shortterm
+        case "future goal": return .future
+        default: return nil
+        }
+    }
 }

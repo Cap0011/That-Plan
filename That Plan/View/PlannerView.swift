@@ -32,6 +32,7 @@ struct PlannerView: View {
                         ZStack {
                             Image("note")
                             RoundedRectangle(cornerRadius: 1)
+                                .foregroundStyle(.black)
                                 .frame(width: 6, height: 2)
                                 .offset(y: -1)
                         }

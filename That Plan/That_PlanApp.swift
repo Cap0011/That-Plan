@@ -11,7 +11,8 @@ import SwiftUI
 struct That_PlanApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            PlannerView()
+                .colorScheme(.light)
         }
     }
 }
