@@ -14,9 +14,7 @@ struct HomeView: View {
         NavigationView {
             VStack(spacing: 0) {
                 HStack {
-                    Image(systemName: "globe")
-                        .imageScale(.large)
-                        .foregroundStyle(.tint)
+                    Image("xrOL3O")
                     
                     Spacer()
                     
