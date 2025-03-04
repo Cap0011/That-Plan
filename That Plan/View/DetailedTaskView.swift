@@ -51,16 +51,18 @@ struct DetailedTaskView: View {
             }
             .padding(.top, 10)
             
-            nextButton
-                .padding(.top, 35)
-                .onTapGesture {
-                    if let selectedIndex = selectedIndex {
-                        // TODO: Move to SetADateView
-                        print(selectedIndex)
-                    } else {
+            if let index = selectedIndex {
+                NavigationLink(destination: SetADateView(text: text, index: index)) {
+                    nextButton
+                        .padding(.top, 35)
+                }
+            } else {
+                nextButton
+                    .padding(.top, 35)
+                    .onTapGesture {
                         // TODO: Alert !
                     }
-                }
+            }
             
             Spacer()
         }
@@ -80,12 +82,20 @@ struct DetailedTaskView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                Text("Next")
-                    .font(.EBGaramond19)
-                    .foregroundStyle(.nextgreen)
-                    .onTapGesture {
-                        // TODO: Move to next View
+                if let index = selectedIndex {
+                    NavigationLink(destination: SetADateView(text: text, index: index)) {
+                        Text("Next")
+                            .font(.EBGaramond19)
+                            .foregroundStyle(.nextgreen)
                     }
+                } else {
+                    Text("Next")
+                        .font(.EBGaramond19)
+                        .foregroundStyle(.nextgreen)
+                        .onTapGesture {
+                            // TODO: Alert !
+                        }
+                }
             }
         }
     }
