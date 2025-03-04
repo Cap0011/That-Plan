@@ -68,6 +68,7 @@ struct DetailedTaskView: View {
         }
         .padding(.top, 15)
         .padding(.horizontal, 20)
+        .background(.white)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

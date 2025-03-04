@@ -68,6 +68,7 @@ struct WritingView: View {
                 }
             }
         }
+        .background(.white)
     }
     
     var finishButton: some View {

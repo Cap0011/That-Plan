@@ -52,6 +52,7 @@ struct SetADateView: View {
         }
         .padding(.top, 15)
         .padding(.horizontal, 20)
+        .background(.white)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -66,14 +67,13 @@ struct SetADateView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink(destination: HomeView()) {
-                    Text("Done")
-                        .font(.EBGaramond19)
-                        .foregroundStyle(.black)
-                        .onTapGesture {
-                            // TODO: Save the task to core data
-                        }
-                }
+                Text("Done")
+                    .font(.EBGaramond19)
+                    .foregroundStyle(.black)
+                    .onTapGesture {
+                        resetToRootView()
+                        // TODO: Save the task to core data
+                    }
             }
         }
     }
@@ -154,6 +154,16 @@ struct SetADateView: View {
                 isNotificationOn.toggle()
             }
         }
+    }
+    
+    func resetToRootView() {
+        guard let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .flatMap({ $0.windows })
+            .first(where: { $0.isKeyWindow }) else { return }
+        
+        window.rootViewController = UIHostingController(rootView: HomeView())
+        window.makeKeyAndVisible()
     }
 }
 

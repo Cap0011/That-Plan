@@ -52,6 +52,7 @@ struct NoteDetailView: View {
         .padding(.top, 15)
         .padding(.horizontal, 20)
         .contentShape(Rectangle())
+        .background(.white)
         .task {
             note = dummy[1]
             text = dummy[1].contents

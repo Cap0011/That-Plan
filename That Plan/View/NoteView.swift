@@ -21,6 +21,7 @@ struct NoteView: View {
             }
             .padding(.top, 15)
             .padding(.horizontal, 19)
+            .background(.white)
         }
         .scrollIndicators(.hidden)
         .navigationBarBackButtonHidden()

@@ -53,6 +53,7 @@ struct PlannerView: View {
                 }
             }
             .padding(.horizontal, 20)
+            .background(.white)
         }
     }
     
