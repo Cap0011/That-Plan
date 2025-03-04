@@ -1,13 +1,13 @@
 //
-//  SortingView.swift
+//  DetailedTaskView.swift
 //  That Plan
 //
-//  Created by Jiyoung Park on 3/3/25.
+//  Created by Jiyoung Park on 3/4/25.
 //
 
 import SwiftUI
 
-struct SortingView: View {
+struct DetailedTaskView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     let text: String
     
@@ -15,11 +15,11 @@ struct SortingView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Task Sorting")
+            Text("Detailed Task")
                 .font(.EBGaramond24)
                 .foregroundStyle(.black)
             
-            Text("Please select the most suitable category for this task.")
+            Text("Please choose the best fit for this task.")
                 .kerning(0.2)
                 .font(.cabin16)
                 .foregroundStyle(.gray800)
@@ -44,33 +44,23 @@ struct SortingView: View {
             }
             .padding(.vertical, 15)
             
-            HStack(spacing: 10) {
-                TypeView(title: "Detailed\nTask", index: 0, padding: 27, height: 150, selectedIndex: $selectedIndex)
-                
-                TypeView(title: "Daily\nRoutine", index: 1, padding: 27, height: 150, selectedIndex: $selectedIndex)
-                
-                TypeView(title: "Information", index: 2, padding: 27, height: 150, selectedIndex: $selectedIndex)
-            }
-            
             HStack(spacing: 12) {
-                TypeView(title: "Short-term Goal", index: 3, padding: 19, height: 109, selectedIndex: $selectedIndex)
+                TypeView(title: "Quick Task", index: 0, selectedIndex: $selectedIndex)
                 
-                TypeView(title: "Future Goal", index: 4, padding: 19, height: 109, selectedIndex: $selectedIndex)
+                TypeView(title: "To-Do Task", index: 1, selectedIndex: $selectedIndex)
             }
             .padding(.top, 10)
             
-            if let index = selectedIndex {
-                NavigationLink(destination: destinationView(for: index)) {
-                    nextButton
-                        .padding(.top, 35)
-                }
-            } else {
-                nextButton
-                    .padding(.top, 35)
-                    .onTapGesture {
+            nextButton
+                .padding(.top, 35)
+                .onTapGesture {
+                    if let selectedIndex = selectedIndex {
+                        // TODO: Move to SetADateView
+                        print(selectedIndex)
+                    } else {
                         // TODO: Alert !
                     }
-            }
+                }
             
             Spacer()
         }
@@ -90,20 +80,12 @@ struct SortingView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                if let index = selectedIndex {
-                    NavigationLink(destination: destinationView(for: index)) {
-                        Text("Next")
-                            .font(.EBGaramond19)
-                            .foregroundStyle(.nextgreen)
+                Text("Next")
+                    .font(.EBGaramond19)
+                    .foregroundStyle(.nextgreen)
+                    .onTapGesture {
+                        // TODO: Move to next View
                     }
-                } else {
-                    Text("Next")
-                        .font(.EBGaramond19)
-                        .foregroundStyle(.nextgreen)
-                        .onTapGesture {
-                            // TODO: Alert !
-                        }
-                }
             }
         }
     }
@@ -123,8 +105,6 @@ struct SortingView: View {
     struct TypeView: View {
         let title: String
         let index: Int
-        let padding: CGFloat
-        let height: CGFloat
         
         @Binding var selectedIndex: Int?
         
@@ -132,31 +112,20 @@ struct SortingView: View {
             ZStack(alignment: .bottom) {
                 RoundedRectangle(cornerRadius: 15)
                     .foregroundStyle(.black)
-                    .frame(height: height)
+                    .frame(height: 109)
                 
                 Text(title)
                     .font(.EBGaramondMedium16)
                     .foregroundStyle(.white)
-                    .padding(.bottom, padding)
-                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 19)
             }
             .onTapGesture {
                 selectedIndex = index
             }
         }
     }
-    
-    func destinationView(for index: Int) -> AnyView {
-        // TODO: Add different views on index
-        switch index {
-        case 0:
-            return AnyView(DetailedTaskView(text: text))
-        default:
-            return AnyView(WritingView())
-        }
-    }
 }
 
 #Preview {
-    SortingView(text: "Make bed without checking Reels.")
+    DetailedTaskView(text: "Make bed without checking Reels.")
 }

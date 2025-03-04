@@ -40,11 +40,10 @@ struct NoteDetailView: View {
                     .padding(.top, 16)
                 
                 if note.type == TaskType.future.text {
-                    sortTasksButton
-                        .padding(.top, 66)
-                        .onTapGesture {
-                            // TODO: Move to SortingView
-                        }
+                    NavigationLink(destination: SortingView(text: text)) {
+                        sortTasksButton
+                            .padding(.top, 66)
+                    }
                 }
             }
             
