@@ -55,7 +55,7 @@ struct AddView: View {
                 .foregroundStyle(.boxbackground)
                 .frame(height: 50)
             
-            Image("add")
+            Image("plus")
         }
     }
     

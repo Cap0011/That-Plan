@@ -152,6 +152,8 @@ struct SortingView: View {
         switch index {
         case 0:
             return AnyView(DetailedTaskView(text: text))
+        case 3:
+            return AnyView(ShortGoalView(text: text))
         default:
             return AnyView(WritingView())
         }
