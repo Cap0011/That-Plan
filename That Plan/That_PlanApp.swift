@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct That_PlanApp: App {
+    @StateObject private var coreDataStack = CoreDataStack.shared
+    
     var body: some Scene {
         WindowGroup {
             TabView()
+                .environment(\.managedObjectContext,
+                                              coreDataStack.persistentContainer.viewContext)
         }
     }
 }

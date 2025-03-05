@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    
     @State var selectedDate: Date?
     
     var body: some View {
