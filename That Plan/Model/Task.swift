@@ -88,15 +88,15 @@ extension Task {
     ]
     
     static let todoTasks: [Task] = [
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Complete project report", date: Date(), hour: 14, minute: 0, isNotificationOn: true, isCompleted: false),
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Schedule dentist appointment", date: Date(), hour: 10, minute: 0, isNotificationOn: true, isCompleted: false),
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Finish coding assignment", date: Date(), hour: 16, minute: 30, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Prepare for meeting", date: Date(), hour: 9, minute: 0, isNotificationOn: true, isCompleted: false),
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Grocery shopping", date: Date(), hour: 17, minute: 45, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Send invoices", date: Date(), hour: 11, minute: 30, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Pick up dry cleaning", date: Date(), hour: 12, minute: 15, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Update resume", date: Date(), hour: 19, minute: 30, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Plan weekend trip", date: Date(), hour: 20, minute: 45, isNotificationOn: false, isCompleted: false),
-        Task(id: UUID(), type: TaskType.todo.text, contents: "Water the plants", date: Date(), hour: 8, minute: 0, isNotificationOn: false, isCompleted: false)
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Complete project report", date: Date().addingTimeInterval(3600 * 2), hour: 14, minute: 0, isNotificationOn: true, isCompleted: false), // 2시간 후
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Schedule dentist appointment", date: Date().addingTimeInterval(3600 * 5), hour: 10, minute: 0, isNotificationOn: true, isCompleted: false), // 5시간 후
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Finish coding assignment", date: Date().addingTimeInterval(3600 * 8), hour: 16, minute: 30, isNotificationOn: false, isCompleted: false), // 8시간 후
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Prepare for meeting", date: Date().addingTimeInterval(3600 * 12), hour: 9, minute: 0, isNotificationOn: true, isCompleted: false), // 12시간 후
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Grocery shopping", date: Date().addingTimeInterval(3600 * 18), hour: 17, minute: 45, isNotificationOn: false, isCompleted: false), // 18시간 후
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Send invoices", date: Date().addingTimeInterval(3600 * 22), hour: 11, minute: 30, isNotificationOn: false, isCompleted: false), // 22시간 후
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Pick up dry cleaning", date: Date().addingTimeInterval(3600 * 24), hour: 12, minute: 15, isNotificationOn: false, isCompleted: false), // 1일 후
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Update resume", date: Date().addingTimeInterval(3600 * 30), hour: 19, minute: 30, isNotificationOn: false, isCompleted: false), // 1.5일 후
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Plan weekend trip", date: Date().addingTimeInterval(3600 * 40), hour: 20, minute: 45, isNotificationOn: false, isCompleted: false), // 2일 후
+        Task(id: UUID(), type: TaskType.todo.text, contents: "Water the plants", date: Date().addingTimeInterval(3600 * 1), hour: 8, minute: 0, isNotificationOn: false, isCompleted: false) // 1시간 후
     ]
 }

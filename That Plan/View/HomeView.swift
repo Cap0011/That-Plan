@@ -46,6 +46,7 @@ struct HomeView: View {
                             .padding(.top, 40)
                     }
                 }
+                .scrollIndicators(.hidden)
             }
             .padding(.horizontal, 20)
             .background(.white)
@@ -67,8 +68,9 @@ struct HomeView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 13) {
-                    Text("🍵    Meditation paper + warm tea.")
-                    Text("️🎧    30-minute walk outside.")
+                    ForEach(Task.dailyTasks, id: \.id) { task in
+                        Text(task.contents)
+                    }
                 }
                 .font(.cabin15)
                 .foregroundStyle(.gray800)
@@ -90,8 +92,9 @@ struct HomeView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-                    checklistItem(content: "Reply to John’s proposal email.", isChecked: true)
-                    checklistItem(content: "Order Zero Coke and juice on Amazon.", isChecked: false)
+                    ForEach(Task.quickTasks, id: \.id) { task in
+                        checklistItem(content: task.contents, isChecked: task.isCompleted ?? false, time: task.hour != nil && task.minute != nil ? Utility.formattedTime(hour: task.hour!, minute: task.minute!) : nil)
+                    }
                 }
                 
                 Spacer()
@@ -108,10 +111,9 @@ struct HomeView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-                    checklistItem(content: "Attend all three morning classes.", isChecked: true)
-                    checklistItem(content: "Outline psychology final report.", isChecked: false)
-                    checklistItem(content: "Attend biology tutoring for Leo.", isChecked: false, time: "03:30 pm")
-                    checklistItem(content: "Do Chapter 6 Spanish shadowing, write 5 new expressions.", isChecked: false, time: "11:00 pm")
+                    ForEach(Task.todoTasks.filter { Calendar.current.isDate($0.date!, inSameDayAs: selectedDate ?? Date()) }, id: \.id) { task in
+                        checklistItem(content: task.contents, isChecked: task.isCompleted ?? false, time: task.hour != nil && task.minute != nil ? Utility.formattedTime(hour: task.hour!, minute: task.minute!) : nil)
+                    }
                 }
                 
                 Spacer()
@@ -190,16 +192,20 @@ struct checklistItem: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            if isChecked {
-                Image("checked")
-            } else {
-                Image("unchecked")
+            ZStack {
+                if isChecked {
+                    Image("checked")
+                } else {
+                    Image("unchecked")
+                }
+            }
+            .onTapGesture {
+                // TODO: Toggle isChecked
             }
             
             Text(content)
                 .font(.cabin15)
                 .foregroundStyle(.black)
-//                    .fixedSize(horizontal: true, vertical: false)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 14)
                 .padding(.trailing, 20)
