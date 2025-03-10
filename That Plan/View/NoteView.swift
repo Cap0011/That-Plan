@@ -9,19 +9,31 @@ import SwiftUI
 
 struct NoteView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+        entity: CDTask.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.createdAt, ascending: true)],
+        predicate: NSPredicate(format: "type == %@ OR type == %@", TaskType.information.text, TaskType.future.text)
+    ) var tasks: FetchedResults<CDTask>
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 9) {
-                NavigationLink(destination: NoteDetailView()) {
-                    TaskItemView(type: "Information", content: "Make bed without checking Reels.")
+            if tasks.isEmpty {
+                
+            } else {
+                VStack(spacing: 9) {
+                    ForEach(Array(tasks), id: \.id) { task in
+                        NavigationLink(destination: NoteDetailView(task: task)) {
+                            if let type = task.type, let contents = task.contents {
+                                TaskItemView(type: type, content: contents)
+                            }
+                        }
+                    }
                 }
-                TaskItemView(type: "Information", content: "Make bed without checking Reels.")
-                TaskItemView(type: "Future Goal", content: "Make bed without checking Reels.")
+                .padding(.top, 15)
+                .padding(.horizontal, 19)
+                .background(.white)
             }
-            .padding(.top, 15)
-            .padding(.horizontal, 19)
-            .background(.white)
         }
         .scrollIndicators(.hidden)
         .navigationBarBackButtonHidden()

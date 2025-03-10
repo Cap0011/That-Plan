@@ -9,6 +9,8 @@ import SwiftUI
 
 struct NoteDetailView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.managedObjectContext) private var viewContext
+    @ObservedObject var task: CDTask
     let dummy = [Task.informationTasks[0], Task.futureTasks[0]]
     
     @State private var note: Task?
@@ -103,8 +105,4 @@ struct NoteDetailView: View {
                 .foregroundStyle(.white)
         }
     }
-}
-
-#Preview {
-    NoteDetailView()
 }
