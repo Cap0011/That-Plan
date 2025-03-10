@@ -9,7 +9,11 @@ import SwiftUI
 
 struct AddView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @State var tasks = Task.quickTasks
+    @FetchRequest(
+            entity: CDTask.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.createdAt, ascending: false)]
+        ) var tasks: FetchedResults<CDTask>
+    
     @State var dates: [Date] = []
     
     var body: some View {
@@ -28,7 +32,7 @@ struct AddView: View {
                 .font(.EBGaramond19)
                 .foregroundStyle(.gray600)
                 .padding(.top, 35)
-                .padding(.bottom, 22)
+                .padding(.bottom, 15)
             
             history
         }
@@ -63,7 +67,7 @@ struct AddView: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 28) {
                 ForEach(dates, id: \.self) { date in
-                    HistoryItemView(date: date, tasks: tasks.filter { Calendar.current.isDate($0.date ?? Date(), inSameDayAs: date) })
+                    HistoryItemView(date: date, tasks: Array(tasks).filter { Calendar.current.isDate($0.date ?? Date(), inSameDayAs: date) })
                 }
             }
         }
@@ -75,7 +79,7 @@ struct AddView: View {
     
     struct HistoryItemView: View {
         let date: Date
-        let tasks: [Task]
+        let tasks: [CDTask]
         
         var body: some View {
             VStack(alignment: .leading, spacing: 11) {
@@ -93,7 +97,9 @@ struct AddView: View {
                 
                 LazyVStack(alignment: .leading, spacing: 9) {
                     ForEach(tasks, id: \.id) { task in
-                        TaskItemView(type: task.type, content: task.contents)
+                        if let type = task.type, let contents = task.contents {
+                            TaskItemView(type: type, content: contents)
+                        }
                     }
                 }
             }
