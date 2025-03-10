@@ -23,7 +23,7 @@ struct NoteView: View {
             } else {
                 VStack(spacing: 9) {
                     ForEach(Array(tasks), id: \.id) { task in
-                        NavigationLink(destination: NoteDetailView(task: task)) {
+                        NavigationLink(destination: NoteDetailView(note: task)) {
                             if let type = task.type, let contents = task.contents {
                                 TaskItemView(type: type, content: contents)
                             }

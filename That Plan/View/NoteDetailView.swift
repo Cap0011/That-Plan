@@ -10,42 +10,38 @@ import SwiftUI
 struct NoteDetailView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @Environment(\.managedObjectContext) private var viewContext
-    @ObservedObject var task: CDTask
-    let dummy = [Task.informationTasks[0], Task.futureTasks[0]]
+    @ObservedObject var note: CDTask
     
-    @State private var note: Task?
     @State private var text = ""
     @FocusState private var isFocused: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if let note = note {
-                Text(note.type)
-                    .font(.EBGaramond24)
-                    .foregroundStyle(.black)
-                
-                Text(TaskType.fromText(note.type)?.description ?? "Empty")
-                    .font(.cabin16)
-                    .kerning(0.2)
-                    .foregroundStyle(.gray800)
-                    .padding(.top, 10)
-                
-                TextField(text, text: $text)
-                    .focused($isFocused)
-                    .submitLabel(.done)
-                    .font(.cabin15)
-                    .kerning(0.2)
-                    .foregroundStyle(.gray800)
-                    .padding(.horizontal, 16)
-                    .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground).frame(height: 50))
-                    .frame(height: 50)
-                    .padding(.top, 16)
-                
-                if note.type == TaskType.future.text {
-                    NavigationLink(destination: SortingView(text: text)) {
-                        sortTasksButton
-                            .padding(.top, 66)
-                    }
+            Text(note.type ?? "")
+                .font(.EBGaramond24)
+                .foregroundStyle(.black)
+            
+            Text(TaskType.fromText(note.type ?? "")?.description ?? "Empty")
+                .font(.cabin16)
+                .kerning(0.2)
+                .foregroundStyle(.gray800)
+                .padding(.top, 10)
+            
+            TextField(text, text: $text)
+                .focused($isFocused)
+                .submitLabel(.done)
+                .font(.cabin15)
+                .kerning(0.2)
+                .foregroundStyle(.gray800)
+                .padding(.horizontal, 16)
+                .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground).frame(height: 50))
+                .frame(height: 50)
+                .padding(.top, 16)
+            
+            if note.type == TaskType.future.text {
+                NavigationLink(destination: SortingView(text: text)) {
+                    sortTasksButton
+                        .padding(.top, 66)
                 }
             }
             
@@ -56,8 +52,7 @@ struct NoteDetailView: View {
         .contentShape(Rectangle())
         .background(.white)
         .task {
-            note = dummy[1]
-            text = dummy[1].contents
+            text = note.contents ?? ""
         }
         .onTapGesture {
             isFocused = false
@@ -76,10 +71,19 @@ struct NoteDetailView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                Text("Edit")
+                Text(isFocused ? "Done" : "Edit")
                     .font(.EBGaramond19)
                     .foregroundStyle(.black)
                     .onTapGesture {
+                        if isFocused {
+                            note.contents = text
+                            
+                            do {
+                                try viewContext.save()
+                            } catch {
+                                print("Error saving context: \(error)")
+                            }
+                        }
                         isFocused.toggle()
                     }
             }
