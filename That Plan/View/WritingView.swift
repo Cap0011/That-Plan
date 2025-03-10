@@ -9,7 +9,6 @@ import SwiftUI
 
 struct WritingView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    let dummy = [Task.informationTasks[0], Task.futureTasks[0]]
     
     @State private var note: Task?
     @State private var text = ""

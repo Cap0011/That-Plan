@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SetADateView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.managedObjectContext) private var viewContext
+
     let text: String
     let index: Int
     
@@ -23,7 +25,7 @@ struct SetADateView: View {
                 .font(.EBGaramond24)
                 .foregroundStyle(.black)
             
-            Text("Please select the date and time for this task.")
+            Text("Please select the date \(index != 0 ? "and time " : "")for this task.")
                 .kerning(0.2)
                 .font(.cabin16)
                 .foregroundStyle(.gray800)
@@ -42,9 +44,11 @@ struct SetADateView: View {
             VStack(alignment: .leading, spacing: 22) {
                 dateSet
                 
-                timeSet
-                
-                notificationSet
+                if index != 0 {
+                    timeSet
+                    
+                    notificationSet
+                }
             }
             .padding(.top, 24)
             
@@ -71,8 +75,8 @@ struct SetADateView: View {
                     .font(.EBGaramond19)
                     .foregroundStyle(.black)
                     .onTapGesture {
+                        addTask()
                         resetToRootView()
-                        // TODO: Save the task to core data
                     }
             }
         }
@@ -156,7 +160,7 @@ struct SetADateView: View {
         }
     }
     
-    func resetToRootView() {
+    private func resetToRootView() {
         guard let window = UIApplication.shared.connectedScenes
             .compactMap({ $0 as? UIWindowScene })
             .flatMap({ $0.windows })
@@ -164,6 +168,31 @@ struct SetADateView: View {
         
         window.rootViewController = UIHostingController(rootView: HomeView())
         window.makeKeyAndVisible()
+    }
+    
+    private func addTask() {
+        let newTask = CDTask(context: viewContext)
+        newTask.id = UUID()
+        newTask.type = index == 0 ? TaskType.quick.text : TaskType.todo.text
+        newTask.contents = text
+        newTask.date = date
+        newTask.createdAt = Date()
+        if let hour = hour, let minute = minute {
+            newTask.hour = Int64(hour)
+            newTask.minute = Int64(minute)
+        } else {
+            newTask.hour = -1
+            newTask.minute = -1
+        }
+        newTask.isNotificationOn = (isNotificationOn == true)
+        newTask.isCompleted = false
+        
+        do {
+            try viewContext.save()
+            print("Task saved successfully!")
+        } catch {
+            print("Failed to save task: \(error)")
+        }
     }
 }
 
