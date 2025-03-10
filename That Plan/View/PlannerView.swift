@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct PlannerView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+            entity: CDTask.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.date, ascending: true)]
+        ) var tasks: FetchedResults<CDTask>
+    
     @State private var month = 1
     @State private var year = 0
     @State private var selectedDate = Date()
@@ -43,13 +49,34 @@ struct PlannerView: View {
                     .padding(.top, 25)
                     .padding(.bottom, 22)
                 
-                ScrollView(showsIndicators: false) {
-                    VStack {
-                        quick
+                if tasks.isEmpty {
+                    VStack(spacing: 13) {
+                        Text("No plans saved for this date.")
+                            .font(.cabinMedium16)
+                            .foregroundStyle(.gray600)
                         
-                        today
-                            .padding(.top, 38)
+                        Text("Go to the Today tab to add a new plan.")
+                            .font(.cabin14)
+                            .foregroundStyle(.gray500)
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 114)
+                    
+                    Spacer()
+                } else {
+                    ScrollView(.vertical) {
+                        VStack(alignment: .leading, spacing: 0) {
+                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                                quick
+                            }
+                            
+                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                                today
+                                    .padding(.top, 38)
+                            }
+                        }
+                    }
+                    .scrollIndicators(.hidden)
                 }
             }
             .padding(.horizontal, 20)
@@ -141,8 +168,12 @@ struct PlannerView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-//                    checklistItem(content: "Reply to John’s proposal email.", isChecked: true)
-//                    checklistItem(content: "Order Zero Coke and juice on Amazon.", isChecked: false)
+                    ForEach(tasks.filter { $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }, id: \.id) { task in
+                        checklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
+                            task.isCompleted = newValue
+                            try? viewContext.save()
+                        }), time: nil)
+                    }
                 }
                 
                 Spacer()
@@ -159,10 +190,12 @@ struct PlannerView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-//                    checklistItem(content: "Attend all three morning classes.", isChecked: true)
-//                    checklistItem(content: "Outline psychology final report.", isChecked: false)
-//                    checklistItem(content: "Attend biology tutoring for Leo.", isChecked: false, time: "03:30 pm")
-//                    checklistItem(content: "Do Chapter 6 Spanish shadowing, write 5 new expressions.", isChecked: false, time: "11:00 pm")
+                    ForEach(tasks.filter { $0.type == TaskType.todo.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }, id: \.id) { task in
+                        checklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
+                            task.isCompleted = newValue
+                            try? viewContext.save()
+                        }), time: Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)))
+                    }
                 }
                 
                 Spacer()
