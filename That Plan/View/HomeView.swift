@@ -11,10 +11,10 @@ struct HomeView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
             entity: CDTask.entity(),
-            sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.date, ascending: true)]
+            sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.createdAt, ascending: true)]
         ) var tasks: FetchedResults<CDTask>
     
-    @State var selectedDate: Date?
+    @State var selectedDate = Date()
     
     var body: some View {
         NavigationView {
@@ -43,7 +43,7 @@ struct HomeView: View {
                 
                 if tasks.isEmpty {
                     VStack(spacing: 13) {
-                        Text("No plans saved for today")
+                        Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
                             .font(.cabinMedium16)
                             .foregroundStyle(.gray600)
                         
@@ -95,8 +95,8 @@ struct HomeView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 13) {
-                    ForEach(Task.dailyTasks, id: \.id) { task in
-                        Text(task.contents)
+                    ForEach(tasks.filter { $0.type == TaskType.daily.text && $0.contents != nil }, id: \.id) { task in
+                        Text(task.contents!)
                     }
                 }
                 .font(.cabin15)
@@ -119,7 +119,7 @@ struct HomeView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-                    ForEach(tasks.filter { $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate ?? Date()) }, id: \.id) { task in
+                    ForEach(tasks.filter { $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }, id: \.id) { task in
                         checklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
                             task.isCompleted = newValue
                             try? viewContext.save()
@@ -141,7 +141,7 @@ struct HomeView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-                    ForEach(tasks.filter { $0.type == TaskType.todo.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate ?? Date()) }, id: \.id) { task in
+                    ForEach(Utility.sortedTasks(tasks: Array(tasks), date: selectedDate), id: \.id) { task in
                         checklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
                             task.isCompleted = newValue
                             try? viewContext.save()
@@ -165,7 +165,7 @@ struct HomeView: View {
     
     struct dateSelector: View {
         let date: Date
-        @Binding var selectedDate: Date?
+        @Binding var selectedDate: Date
         
         @State private var day = ""
         @State private var weekday = ""
@@ -186,11 +186,9 @@ struct HomeView: View {
                 }
                 .foregroundStyle(isItToday ? .white : .unselected)
                 
-                if let selectedDate = selectedDate {
-                    if Calendar.current.isDate(selectedDate, inSameDayAs: date) && !isItToday {
-                        Image("ellipse")
-                            .offset(y: 30)
-                    }
+                if Calendar.current.isDate(selectedDate, inSameDayAs: date) && !isItToday {
+                    Image("ellipse")
+                        .offset(y: 30)
                 }
             }
             .frame(width: 33)

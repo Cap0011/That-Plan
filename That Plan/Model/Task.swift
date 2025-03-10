@@ -21,19 +21,6 @@ struct Task {
 }
 
 extension Task {
-    init(cdTask: CDTask) {
-        self.id = cdTask.id ?? UUID()
-        self.type = cdTask.type ?? ""
-        self.contents = cdTask.contents ?? ""
-        self.date = cdTask.date
-        self.hour = Int(cdTask.hour)
-        self.minute = Int(cdTask.minute)
-        self.isNotificationOn = cdTask.isNotificationOn
-        self.isCompleted = cdTask.isCompleted
-    }
-}
-
-extension Task {
     static let quickTasks: [Task] = [
         Task(id: UUID(), type: TaskType.quick.text, contents: "Buy groceries", date: Calendar.current.date(byAdding: .day, value: -2, to: Date()), hour: 10, minute: 30, isNotificationOn: true, isCompleted: false),
         Task(id: UUID(), type: TaskType.quick.text, contents: "Call mom", date: Calendar.current.date(byAdding: .day, value: 1, to: Date()), hour: 15, minute: 0, isNotificationOn: true, isCompleted: false),

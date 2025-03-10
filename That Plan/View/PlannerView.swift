@@ -11,7 +11,7 @@ struct PlannerView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
             entity: CDTask.entity(),
-            sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.date, ascending: true)]
+            sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.createdAt, ascending: true)]
         ) var tasks: FetchedResults<CDTask>
     
     @State private var month = 1
@@ -51,7 +51,7 @@ struct PlannerView: View {
                 
                 if tasks.isEmpty {
                     VStack(spacing: 13) {
-                        Text("No plans saved for this date.")
+                        Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
                             .font(.cabinMedium16)
                             .foregroundStyle(.gray600)
                         
@@ -190,7 +190,7 @@ struct PlannerView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-                    ForEach(tasks.filter { $0.type == TaskType.todo.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }, id: \.id) { task in
+                    ForEach(Utility.sortedTasks(tasks: Array(tasks), date: selectedDate), id: \.id) { task in
                         checklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
                             task.isCompleted = newValue
                             try? viewContext.save()
