@@ -141,8 +141,8 @@ struct PlannerView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-                    checklistItem(content: "Reply to John’s proposal email.", isChecked: true)
-                    checklistItem(content: "Order Zero Coke and juice on Amazon.", isChecked: false)
+//                    checklistItem(content: "Reply to John’s proposal email.", isChecked: true)
+//                    checklistItem(content: "Order Zero Coke and juice on Amazon.", isChecked: false)
                 }
                 
                 Spacer()
@@ -159,10 +159,10 @@ struct PlannerView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-                    checklistItem(content: "Attend all three morning classes.", isChecked: true)
-                    checklistItem(content: "Outline psychology final report.", isChecked: false)
-                    checklistItem(content: "Attend biology tutoring for Leo.", isChecked: false, time: "03:30 pm")
-                    checklistItem(content: "Do Chapter 6 Spanish shadowing, write 5 new expressions.", isChecked: false, time: "11:00 pm")
+//                    checklistItem(content: "Attend all three morning classes.", isChecked: true)
+//                    checklistItem(content: "Outline psychology final report.", isChecked: false)
+//                    checklistItem(content: "Attend biology tutoring for Leo.", isChecked: false, time: "03:30 pm")
+//                    checklistItem(content: "Do Chapter 6 Spanish shadowing, write 5 new expressions.", isChecked: false, time: "11:00 pm")
                 }
                 
                 Spacer()

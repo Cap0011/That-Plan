@@ -9,6 +9,10 @@ import SwiftUI
 
 struct HomeView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+            entity: CDTask.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.date, ascending: true)]
+        ) var tasks: FetchedResults<CDTask>
     
     @State var selectedDate: Date?
     
@@ -37,16 +41,39 @@ struct HomeView: View {
                 }
                 .padding(.vertical, 20)
                 
-                ScrollView(.vertical) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        daily
-                        quick
-                            .padding(.top, 34)
-                        today
-                            .padding(.top, 40)
+                if tasks.isEmpty {
+                    VStack(spacing: 13) {
+                        Text("No plans saved for today")
+                            .font(.cabinMedium16)
+                            .foregroundStyle(.gray600)
+                        
+                        Text("Tap the plus button in the top right to add one.")
+                            .font(.cabin14)
+                            .foregroundStyle(.gray500)
                     }
+                    .padding(.top, 230)
+                    
+                    Spacer()
+                } else {
+                    ScrollView(.vertical) {
+                        VStack(alignment: .leading, spacing: 0) {
+                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                                daily
+                            }
+                            
+                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                                quick
+                                    .padding(.top, 34)
+                            }
+                            
+                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                                today
+                                    .padding(.top, 40)
+                            }
+                        }
+                    }
+                    .scrollIndicators(.hidden)
                 }
-                .scrollIndicators(.hidden)
             }
             .padding(.horizontal, 20)
             .background(.white)
@@ -92,8 +119,11 @@ struct HomeView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-                    ForEach(Task.quickTasks, id: \.id) { task in
-                        checklistItem(content: task.contents, isChecked: task.isCompleted ?? false, time: task.hour != nil && task.minute != nil ? Utility.formattedTime(hour: task.hour!, minute: task.minute!) : nil)
+                    ForEach(tasks.filter { $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate ?? Date()) }, id: \.id) { task in
+                        checklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
+                            task.isCompleted = newValue
+                            try? viewContext.save()
+                        }), time: nil)
                     }
                 }
                 
@@ -111,8 +141,11 @@ struct HomeView: View {
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
-                    ForEach(Task.todoTasks.filter { Calendar.current.isDate($0.date!, inSameDayAs: selectedDate ?? Date()) }, id: \.id) { task in
-                        checklistItem(content: task.contents, isChecked: task.isCompleted ?? false, time: task.hour != nil && task.minute != nil ? Utility.formattedTime(hour: task.hour!, minute: task.minute!) : nil)
+                    ForEach(tasks.filter { $0.type == TaskType.todo.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate ?? Date()) }, id: \.id) { task in
+                        checklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
+                            task.isCompleted = newValue
+                            try? viewContext.save()
+                        }), time: Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)))
                     }
                 }
                 
@@ -181,26 +214,14 @@ struct HomeView: View {
 
 struct checklistItem: View {
     let content: String
-    let isChecked: Bool
+    @Binding var isChecked: Bool
     let time: String?
-    
-    init(content: String, isChecked: Bool, time: String? = nil) {
-        self.content = content
-        self.isChecked = isChecked
-        self.time = time
-    }
-    
+
     var body: some View {
         HStack(spacing: 0) {
-            ZStack {
-                if isChecked {
-                    Image("checked")
-                } else {
-                    Image("unchecked")
-                }
-            }
+            Image(isChecked ? "checked" : "unchecked")
             .onTapGesture {
-                // TODO: Toggle isChecked
+                isChecked.toggle()
             }
             
             Text(content)

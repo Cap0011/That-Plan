@@ -4,11 +4,11 @@
         <attribute name="childTaskIds" optional="YES" attributeType="String"/>
         <attribute name="contents" optional="YES" attributeType="String"/>
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="hour" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="hour" optional="YES" attributeType="Integer 64" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isCompleted" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isNotificationOn" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="minute" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="minute" optional="YES" attributeType="Integer 64" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="parentTaskId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="type" optional="YES" attributeType="String"/>
     </entity>
