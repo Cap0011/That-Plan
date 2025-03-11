@@ -70,6 +70,7 @@ struct BreakDownTaskView: View {
                     .foregroundStyle(pageIndex % 2 == 1 ? .black : .nextgreen)
                     .onTapGesture {
                         if pageIndex == 2 * texts.count - 1 {
+                            updateTask()
                             addTasks()
                             Utility.resetToRootView()
                         } else {
