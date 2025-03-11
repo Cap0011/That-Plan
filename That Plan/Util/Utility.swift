@@ -5,7 +5,7 @@
 //  Created by Jiyoung Park on 3/5/25.
 //
 
-import Foundation
+import SwiftUI
 
 struct Utility {
     static func formattedTime(hour: Int, minute: Int) -> String {
@@ -30,5 +30,15 @@ struct Utility {
             
             return $0.hour == $1.hour ? $0.minute < $1.minute : $0.hour < $1.hour
         }
+    }
+    
+    static func resetToRootView() {
+        guard let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .flatMap({ $0.windows })
+            .first(where: { $0.isKeyWindow }) else { return }
+        
+        window.rootViewController = UIHostingController(rootView: TabView())
+        window.makeKeyAndVisible()
     }
 }

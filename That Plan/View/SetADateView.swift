@@ -76,7 +76,7 @@ struct SetADateView: View {
                     .foregroundStyle(.black)
                     .onTapGesture {
                         addTask()
-                        resetToRootView()
+                        Utility.resetToRootView()
                     }
             }
         }
@@ -158,16 +158,6 @@ struct SetADateView: View {
                 isNotificationOn.toggle()
             }
         }
-    }
-    
-    private func resetToRootView() {
-        guard let window = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .flatMap({ $0.windows })
-            .first(where: { $0.isKeyWindow }) else { return }
-        
-        window.rootViewController = UIHostingController(rootView: HomeView())
-        window.makeKeyAndVisible()
     }
     
     private func addTask() {
