@@ -194,7 +194,7 @@ struct PlannerView: View {
                         checklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
                             task.isCompleted = newValue
                             try? viewContext.save()
-                        }), time: Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)))
+                        }), time: task.hour > 0 && task.minute > 0 ? Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)) : nil)
                     }
                 }
                 
