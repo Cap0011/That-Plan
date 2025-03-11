@@ -27,9 +27,17 @@ struct WritingView: View {
                 .padding(.horizontal, 16)
                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
             
-            NavigationLink(destination: SortingView(text: text)) {
+            if text.isEmpty {
                 finishButton
                     .padding(.top, 24)
+                    .onTapGesture {
+                        // TODO: Alert !
+                    }
+            } else {
+                NavigationLink(destination: SortingView(text: text)) {
+                    finishButton
+                        .padding(.top, 24)
+                }
             }
             
             Spacer()
@@ -60,10 +68,19 @@ struct WritingView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink(destination: SortingView(text: text)) {
+                if text.isEmpty {
                     Text("Next")
                         .font(.EBGaramond19)
                         .foregroundStyle(.nextgreen)
+                        .onTapGesture {
+                            // TODO: Alert !
+                        }
+                } else {
+                    NavigationLink(destination: SortingView(text: text)) {
+                        Text("Next")
+                            .font(.EBGaramond19)
+                            .foregroundStyle(.nextgreen)
+                    }
                 }
             }
         }
