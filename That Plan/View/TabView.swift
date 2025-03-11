@@ -8,28 +8,31 @@
 import SwiftUI
 
 struct TabView: View {
-    @StateObject private var navigationState = NavigationState.shared
+    @Environment(\.presentationMode) private var presentationMode
+    
     @State private var tab: Tab = .today
     
     var body: some View {
-        VStack(spacing: 0) {
-            switch tab {
-            case .today:
-                HomeView()
-            case .planner:
-                PlannerView()
-            case .settings:
-                PlannerView()
+        NavigationStack {
+            VStack(spacing: 0) {
+                switch tab {
+                case .today:
+                    HomeView()
+                case .planner:
+                    PlannerView()
+                case .settings:
+                    PlannerView()
+                }
+                
+                Spacer()
+                
+                if presentationMode.wrappedValue.isPresented == false {
+                    TabbarView(selectedTab: $tab)
+                }
             }
-            
-            Spacer()
-            
-            if navigationState.isRootView {
-                TabbarView(selectedTab: $tab)
-            }
+            .background(.white)
+            .ignoresSafeArea()
         }
-        .background(.white)
-        .ignoresSafeArea()
     }
 }
 

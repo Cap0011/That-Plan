@@ -10,9 +10,9 @@ import SwiftUI
 struct PlannerView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
-            entity: CDTask.entity(),
-            sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.createdAt, ascending: true)]
-        ) var tasks: FetchedResults<CDTask>
+        entity: CDTask.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.createdAt, ascending: true)]
+    ) var tasks: FetchedResults<CDTask>
     
     @State private var month = 1
     @State private var year = 0
@@ -26,65 +26,62 @@ struct PlannerView: View {
     let weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    Text("My Planner")
-                        .font(.EBGaramond21)
-                    
-                    Spacer()
-                    
-                    NavigationLink(destination: NoteView()) {
-                        ZStack {
-                            Image("note")
-                            RoundedRectangle(cornerRadius: 1)
-                                .foregroundStyle(.black)
-                                .frame(width: 6, height: 2)
-                                .offset(y: -1)
-                        }
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text("My Planner")
+                    .font(.EBGaramond21)
+                    .foregroundStyle(.black)
+                
+                Spacer()
+                
+                NavigationLink(destination: NoteView()) {
+                    ZStack {
+                        Image("note")
+                        RoundedRectangle(cornerRadius: 1)
+                            .foregroundStyle(.black)
+                            .frame(width: 6, height: 2)
+                            .offset(y: -1)
                     }
                 }
+            }
+            
+            planner
+                .padding(.top, 25)
+                .padding(.bottom, 22)
+            
+            if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
+                VStack(spacing: 13) {
+                    Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
+                        .font(.cabinMedium16)
+                        .foregroundStyle(.gray600)
+                    
+                    Text("Go to the Today tab to add a new plan.")
+                        .font(.cabin14)
+                        .foregroundStyle(.gray500)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.top, 114)
                 
-                planner
-                    .padding(.top, 25)
-                    .padding(.bottom, 22)
-                
-                if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
-                    VStack(spacing: 13) {
-                        Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
-                            .font(.cabinMedium16)
-                            .foregroundStyle(.gray600)
+                Spacer()
+            } else {
+                ScrollView(.vertical) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        if !tasks.filter({ $0.type == TaskType.quick.text }).isEmpty {
+                            quick
+                        }
                         
-                        Text("Go to the Today tab to add a new plan.")
-                            .font(.cabin14)
-                            .foregroundStyle(.gray500)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 114)
-                    
-                    Spacer()
-                } else {
-                    ScrollView(.vertical) {
-                        VStack(alignment: .leading, spacing: 0) {
-                            if !tasks.filter({ $0.type == TaskType.quick.text }).isEmpty {
-                                quick
-                            }
-                            
-                            if !tasks.filter({ $0.type == TaskType.todo.text }).isEmpty {
-                                today
-                                    .padding(.top, 38)
-                            }
+                        if !tasks.filter({ $0.type == TaskType.todo.text }).isEmpty {
+                            today
+                                .padding(.top, 38)
                         }
                     }
-                    .scrollIndicators(.hidden)
                 }
+                .scrollIndicators(.hidden)
             }
-            .onAppear {
-                NavigationState.shared.isRootView = true
-            }
-            .padding(.horizontal, 20)
-            .background(.white)
         }
+        .padding(.top, 60)
+        .padding(.horizontal, 20)
+        .background(.white)
     }
     
     var planner: some View {
@@ -122,7 +119,7 @@ struct PlannerView: View {
                     }
             }
             .padding(.bottom, 15)
-
+            
             HStack(spacing: (calendarSize - 24 * 7) / 6) {
                 ForEach(weekdays, id: \.self) { weekday in
                     Text(weekday)

@@ -36,9 +36,6 @@ struct AddView: View {
             
             history
         }
-        .onAppear {
-            NavigationState.shared.isRootView = false
-        }
         .padding(.horizontal, 20)
         .background(.white)
         .navigationBarBackButtonHidden()

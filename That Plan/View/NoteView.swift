@@ -60,9 +60,6 @@ struct NoteView: View {
                 }
             }
         }
-        .onAppear {
-            NavigationState.shared.isRootView = false
-        }
     }
 }
 

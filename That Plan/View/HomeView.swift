@@ -10,77 +10,73 @@ import SwiftUI
 struct HomeView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(
-            entity: CDTask.entity(),
-            sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.createdAt, ascending: true)]
-        ) var tasks: FetchedResults<CDTask>
+        entity: CDTask.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.createdAt, ascending: true)]
+    ) var tasks: FetchedResults<CDTask>
     
     @State var selectedDate = Date()
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                HStack {
-                    Image("xrOL3O")
-                    
-                    Spacer()
-                    
-                    NavigationLink(destination: AddView()) {
-                        Image("add")
-                            .frame(width: 23, height: 23)
-                            .clipShape(Rectangle())
-                    }
-                }
+        VStack(spacing: 0) {
+            HStack {
+                Image("xrOL3O")
                 
-                HStack(spacing: 20) {
-                    ForEach(getDatesfromThisWeek(), id: \.self) { date in
-                        dateSelector(date: date, selectedDate: $selectedDate)
-                            .onTapGesture {
-                                selectedDate = date
-                            }
-                    }
-                }
-                .padding(.vertical, 20)
+                Spacer()
                 
-                if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
-                    VStack(spacing: 13) {
-                        Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
-                            .font(.cabinMedium16)
-                            .foregroundStyle(.gray600)
+                NavigationLink(destination: AddView()) {
+                    Image("add")
+                        .frame(width: 23, height: 23)
+                        .clipShape(Rectangle())
+                }
+            }
+            
+            HStack(spacing: 20) {
+                ForEach(getDatesfromThisWeek(), id: \.self) { date in
+                    dateSelector(date: date, selectedDate: $selectedDate)
+                        .onTapGesture {
+                            selectedDate = date
+                        }
+                }
+            }
+            .padding(.vertical, 20)
+            
+            if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
+                VStack(spacing: 13) {
+                    Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
+                        .font(.cabinMedium16)
+                        .foregroundStyle(.gray600)
+                    
+                    Text("Tap the plus button in the top right to add one.")
+                        .font(.cabin14)
+                        .foregroundStyle(.gray500)
+                }
+                .padding(.top, 230)
+                
+                Spacer()
+            } else {
+                ScrollView(.vertical) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                            daily
+                        }
                         
-                        Text("Tap the plus button in the top right to add one.")
-                            .font(.cabin14)
-                            .foregroundStyle(.gray500)
-                    }
-                    .padding(.top, 230)
-                    
-                    Spacer()
-                } else {
-                    ScrollView(.vertical) {
-                        VStack(alignment: .leading, spacing: 0) {
-                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
-                                daily
-                            }
-                            
-                            if !tasks.filter({ $0.type == TaskType.quick.text }).isEmpty {
-                                quick
-                                    .padding(.top, 34)
-                            }
-                            
-                            if !tasks.filter({ $0.type == TaskType.todo.text }).isEmpty {
-                                today
-                                    .padding(.top, 40)
-                            }
+                        if !tasks.filter({ $0.type == TaskType.quick.text }).isEmpty {
+                            quick
+                                .padding(.top, 34)
+                        }
+                        
+                        if !tasks.filter({ $0.type == TaskType.todo.text }).isEmpty {
+                            today
+                                .padding(.top, 40)
                         }
                     }
-                    .scrollIndicators(.hidden)
                 }
+                .scrollIndicators(.hidden)
             }
-            .onAppear {
-                NavigationState.shared.isRootView = true
-            }
-            .padding(.horizontal, 20)
-            .background(.white)
         }
+        .padding(.top, 60)
+        .padding(.horizontal, 20)
+        .background(.white)
     }
     
     var daily: some View {
@@ -198,10 +194,10 @@ struct HomeView: View {
             .onAppear {
                 let dateFormatter = DateFormatter()
                 dateFormatter.locale = Locale(identifier: "en_US")
-
+                
                 dateFormatter.dateFormat = "dd"
                 day = dateFormatter.string(from: date)
-
+                
                 dateFormatter.dateFormat = "EEE"
                 weekday = dateFormatter.string(from: date)
                 
@@ -217,13 +213,13 @@ struct checklistItem: View {
     let content: String
     @Binding var isChecked: Bool
     let time: String?
-
+    
     var body: some View {
         HStack(spacing: 0) {
             Image(isChecked ? "checked" : "unchecked")
-            .onTapGesture {
-                isChecked.toggle()
-            }
+                .onTapGesture {
+                    isChecked.toggle()
+                }
             
             Text(content)
                 .font(.cabin15)
@@ -231,7 +227,7 @@ struct checklistItem: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 14)
                 .padding(.trailing, 20)
-
+            
             if let time = time {
                 Text(time)
                     .font(.charisSIL12)
