@@ -75,6 +75,9 @@ struct HomeView: View {
                     .scrollIndicators(.hidden)
                 }
             }
+            .onAppear {
+                NavigationState.shared.isRootView = true
+            }
             .padding(.horizontal, 20)
             .background(.white)
         }

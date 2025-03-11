@@ -22,8 +22,8 @@ struct TabbarView: View {
                 TabbarItem(type: .planner, selectedTab: $selectedTab)
                 TabbarItem(type: .settings, selectedTab: $selectedTab)
             }
-            .padding(.top, 3.5)
-            .padding(.horizontal, 60)
+            .padding(.top, 7)
+            .padding(.horizontal, 20)
         }
     }
     
@@ -32,7 +32,7 @@ struct TabbarView: View {
         @Binding var selectedTab: Tab
         
         var body: some View {
-            VStack(spacing: 7) {
+            VStack(spacing: 4) {
                 Image(type.imageName + (selectedTab != type ? "_un" : ""))
                 Text(type.title).font(.system(size: 12)).foregroundStyle(selectedTab != type ? Color.gray300 : Color.gray900)
                     .frame(maxWidth: .infinity)

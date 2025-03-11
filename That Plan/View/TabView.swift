@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TabView: View {
+    @StateObject private var navigationState = NavigationState.shared
     @State private var tab: Tab = .today
     
     var body: some View {
@@ -23,7 +24,9 @@ struct TabView: View {
             
             Spacer()
             
-            TabbarView(selectedTab: $tab)
+            if navigationState.isRootView {
+                TabbarView(selectedTab: $tab)
+            }
         }
         .background(.white)
         .ignoresSafeArea()
