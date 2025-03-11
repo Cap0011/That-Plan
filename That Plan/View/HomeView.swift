@@ -41,7 +41,7 @@ struct HomeView: View {
                 }
                 .padding(.vertical, 20)
                 
-                if tasks.isEmpty {
+                if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
                     VStack(spacing: 13) {
                         Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
                             .font(.cabinMedium16)
@@ -61,12 +61,12 @@ struct HomeView: View {
                                 daily
                             }
                             
-                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                            if !tasks.filter({ $0.type == TaskType.quick.text }).isEmpty {
                                 quick
                                     .padding(.top, 34)
                             }
                             
-                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                            if !tasks.filter({ $0.type == TaskType.todo.text }).isEmpty {
                                 today
                                     .padding(.top, 40)
                             }
@@ -145,7 +145,7 @@ struct HomeView: View {
                         checklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
                             task.isCompleted = newValue
                             try? viewContext.save()
-                        }), time: Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)))
+                        }), time: task.hour > 0 && task.minute > 0 ? Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)) : nil)
                     }
                 }
                 

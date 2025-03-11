@@ -49,7 +49,7 @@ struct PlannerView: View {
                     .padding(.top, 25)
                     .padding(.bottom, 22)
                 
-                if tasks.isEmpty {
+                if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
                     VStack(spacing: 13) {
                         Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
                             .font(.cabinMedium16)
@@ -66,11 +66,11 @@ struct PlannerView: View {
                 } else {
                     ScrollView(.vertical) {
                         VStack(alignment: .leading, spacing: 0) {
-                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                            if !tasks.filter({ $0.type == TaskType.quick.text }).isEmpty {
                                 quick
                             }
                             
-                            if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                            if !tasks.filter({ $0.type == TaskType.todo.text }).isEmpty {
                                 today
                                     .padding(.top, 38)
                             }
