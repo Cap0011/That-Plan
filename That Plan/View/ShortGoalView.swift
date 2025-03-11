@@ -122,10 +122,11 @@ struct ShortGoalView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                // TODO: Move to DetailedTaskView
-                Text("Next")
-                    .font(.EBGaramond19)
-                    .foregroundStyle(.nextgreen)
+                NavigationLink(destination: BreakDownGuideView(goal: text, texts: tasks)) {
+                    Text("Next")
+                        .font(.EBGaramond19)
+                        .foregroundStyle(.nextgreen)
+                }
             }
         }
     }

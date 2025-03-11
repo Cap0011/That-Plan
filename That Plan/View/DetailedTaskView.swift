@@ -112,27 +112,27 @@ struct DetailedTaskView: View {
                 .foregroundStyle(.white)
         }
     }
+}
+
+struct TypeView: View {
+    let title: String
+    let index: Int
     
-    struct TypeView: View {
-        let title: String
-        let index: Int
-        
-        @Binding var selectedIndex: Int?
-        
-        var body: some View {
-            ZStack(alignment: .bottom) {
-                RoundedRectangle(cornerRadius: 15)
-                    .foregroundStyle(.black)
-                    .frame(height: 109)
-                
-                Text(title)
-                    .font(.EBGaramondMedium16)
-                    .foregroundStyle(.white)
-                    .padding(.bottom, 19)
-            }
-            .onTapGesture {
-                selectedIndex = index
-            }
+    @Binding var selectedIndex: Int?
+    
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            RoundedRectangle(cornerRadius: 15)
+                .foregroundStyle(.black)
+                .frame(height: 109)
+            
+            Text(title)
+                .font(.EBGaramondMedium16)
+                .foregroundStyle(.white)
+                .padding(.bottom, 19)
+        }
+        .onTapGesture {
+            selectedIndex = index
         }
     }
 }

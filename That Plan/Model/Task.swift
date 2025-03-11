@@ -18,6 +18,7 @@ struct Task {
     var isCompleted: Bool?
     var parentTaskId: UUID?
     var childTaskIds: [UUID] = []
+    var createdAt: Date?
 }
 
 extension Task {
