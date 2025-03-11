@@ -36,6 +36,9 @@ struct BreakDownTaskView: View {
                 tasks.append(Task(id: UUID(), type: "", contents: texts[index]))
             }
         }
+        .onChange(of: pageIndex / 2) { _ in
+            resetValues()
+        }
         .padding(.horizontal, 20)
         .background(.white)
         .navigationBarBackButtonHidden()
@@ -47,7 +50,11 @@ struct BreakDownTaskView: View {
                     .frame(width: 40, height: 40)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        self.presentationMode.wrappedValue.dismiss()
+                        if pageIndex == 0 {
+                            self.presentationMode.wrappedValue.dismiss()
+                        } else {
+                            pageIndex -= 1
+                        }
                     }
             }
             
@@ -122,6 +129,7 @@ struct BreakDownTaskView: View {
                         pageIndex += 1
                     } else {
                         // TODO: Alert !
+                        print("Task type hasn't selected yet.")
                     }
                 }
             
@@ -276,11 +284,24 @@ struct BreakDownTaskView: View {
     }
     
     private func resetValues() {
-        selectedIndex = nil
-        date = Date()
-        hour = nil
-        minute = nil
-        isNotificationOn = false
+        if tasks.isEmpty {
+            selectedIndex = nil
+            date = Date()
+            hour = nil
+            minute = nil
+            isNotificationOn = false
+        } else {
+            let task = tasks[pageIndex / 2]
+            if task.type == "" {
+                selectedIndex = nil
+            } else {
+                selectedIndex = task.type == TaskType.quick.text ? 0 : 1
+            }
+            date = task.date ?? Date()
+            hour = task.hour
+            minute = task.minute
+            isNotificationOn = task.isNotificationOn ?? false
+        }
     }
     
     private func addTasks() {
