@@ -40,25 +40,26 @@ struct HomeView: View {
             }
             .padding(.vertical, 20)
             
-            if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
-                VStack(spacing: 13) {
-                    Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
-                        .font(.cabinMedium16)
-                        .foregroundStyle(.gray600)
-                    
-                    Text("Tap the plus button in the top right to add one.")
-                        .font(.cabin14)
-                        .foregroundStyle(.gray500)
+            ScrollView(.vertical) {
+                if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
+                    daily
                 }
-                .padding(.top, 230)
                 
-                Spacer()
-            } else {
-                ScrollView(.vertical) {
+                if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
+                    VStack(spacing: 13) {
+                        Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
+                            .font(.cabinMedium16)
+                            .foregroundStyle(.gray600)
+                        
+                        Text("Tap the plus button in the top right to add one.")
+                            .font(.cabin14)
+                            .foregroundStyle(.gray500)
+                    }
+                    .padding(.top, 230)
+                    
+                    Spacer()
+                } else {
                     VStack(alignment: .leading, spacing: 0) {
-                        if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
-                            daily
-                        }
                         
                         if !tasks.filter({ $0.type == TaskType.quick.text }).isEmpty {
                             quick
@@ -71,8 +72,8 @@ struct HomeView: View {
                         }
                     }
                 }
-                .scrollIndicators(.hidden)
             }
+            .scrollIndicators(.hidden)
         }
         .padding(.top, 60)
         .padding(.horizontal, 20)
@@ -123,6 +124,13 @@ struct HomeView: View {
                             task.isCompleted = newValue
                             try? viewContext.save()
                         }), time: nil)
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                viewContext.delete(task)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                     }
                 }
                 
