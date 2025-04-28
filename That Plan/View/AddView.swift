@@ -28,13 +28,17 @@ struct AddView: View {
                     .padding(.top, 27)
             }
             
-            Text("History")
-                .font(.EBGaramond19)
-                .foregroundStyle(.gray600)
-                .padding(.top, 35)
-                .padding(.bottom, 15)
+            if !tasks.isEmpty {
+                Text("History")
+                    .font(.EBGaramond19)
+                    .foregroundStyle(.gray600)
+                    .padding(.top, 35)
+                    .padding(.bottom, 15)
+                
+                history
+            }
             
-            history
+            Spacer()
         }
         .padding(.horizontal, 20)
         .background(.white)
