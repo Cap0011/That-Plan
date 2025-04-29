@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SortingView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @Environment(\.managedObjectContext) private var viewContext
+    
     let text: String
     
     @State private var selectedIndex: Int?
@@ -69,16 +71,16 @@ struct SortingView: View {
                     }
                 } else {
                     if index == 1 {
-                        // TODO: Save the task
                         nextButton
                             .onTapGesture {
+                                addTask(index: selectedIndex!)
                                 AlertManager.shared.isShowingToast = true
                                 Utility.resetToRootView()
                             }
                     } else {
-                        // TODO: Save the task
                         nextButton
                             .onTapGesture {
+                                addTask(index: selectedIndex!)
                                 isSavePopupPresented = true
                             }
                     }
@@ -118,10 +120,31 @@ struct SortingView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 if let index = selectedIndex {
-                    NavigationLink(destination: destinationView(for: index)) {
-                        Text("Next")
-                            .font(.EBGaramond19)
-                            .foregroundStyle(Utility.mainColor.opacity(0.7))
+                    if index == 0 || index == 3 {
+                        NavigationLink(destination: destinationView(for: index)) {
+                            Text("Next")
+                                .font(.EBGaramond19)
+                                .foregroundStyle(Utility.mainColor.opacity(0.7))
+                        }
+                    } else {
+                        if index == 1 {
+                            Text("Next")
+                                .font(.EBGaramond19)
+                                .foregroundStyle(Utility.mainColor.opacity(0.7))
+                                .onTapGesture {
+                                    addTask(index: selectedIndex!)
+                                    AlertManager.shared.isShowingToast = true
+                                    Utility.resetToRootView()
+                                }
+                        } else {
+                            Text("Next")
+                                .font(.EBGaramond19)
+                                .foregroundStyle(Utility.mainColor.opacity(0.7))
+                                .onTapGesture {
+                                    addTask(index: selectedIndex!)
+                                    isSavePopupPresented = true
+                                }
+                        }
                     }
                 } else {
                     Text("Next")
@@ -255,7 +278,7 @@ struct SortingView: View {
         }
     }
     
-    func destinationView(for index: Int) -> AnyView {
+    private func destinationView(for index: Int) -> AnyView {
         switch index {
         case 0:
             return AnyView(DetailedTaskView(text: text))
@@ -263,6 +286,28 @@ struct SortingView: View {
             return AnyView(ShortGoalView(text: text))
         default:
             return AnyView(HomeView())
+        }
+    }
+    
+    private func addTask(index: Int) {
+        let newTask = CDTask(context: viewContext)
+        newTask.id = UUID()
+        newTask.type = taskTypeText(for: index)
+        newTask.contents = text
+        newTask.createdAt = Date()
+        newTask.isCompleted = false
+        
+        do {
+            try viewContext.save()
+            print("Task saved successfully!")
+        } catch {
+            print("Failed to save task: \(error)")
+        }
+        
+        func taskTypeText(for index: Int) -> String {
+            if index == 1 { return TaskType.daily.text }
+            if index == 2 { return TaskType.information.text }
+            else { return TaskType.future.text }
         }
     }
 }
