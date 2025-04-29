@@ -84,15 +84,14 @@ struct HomeView: View {
     
     var daily: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 5) {
-                Text("Daily")
-                    .foregroundStyle(.dailygreen)
-                Image("chevron_right")
-                    .offset(y: 2)
-            }
-            .font(.EBGaramond19)
-            .onTapGesture {
-                //TODO: move to edit view
+            NavigationLink(destination: DailyRoutineView()) {
+                HStack(spacing: 5) {
+                    Text("Daily")
+                        .foregroundStyle(.dailygreen)
+                    Image("chevron_right")
+                        .offset(y: 2)
+                }
+                .font(.EBGaramond19)
             }
             
             HStack(spacing: 0) {

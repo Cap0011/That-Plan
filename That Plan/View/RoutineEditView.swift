@@ -11,11 +11,12 @@ struct RoutineEditView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @Environment(\.managedObjectContext) private var viewContext
     
-    @State private var routine: CDTask
+    @State var routine: CDTask
     @State private var text = ""
     @FocusState private var isFocused: Bool
     
     @State private var isDeletePopupPresented = false
+    @State private var isEmptyPopupPresented = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -29,16 +30,18 @@ struct RoutineEditView: View {
                 .padding(.vertical, 18)
                 .padding(.horizontal, 16)
                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
+                .focused($isFocused)
             
             finishButton
                 .padding(.top, 24)
                 .onTapGesture {
                     if text.isEmpty {
-                        // TODO: Alert!
+                        isEmptyPopupPresented.toggle()
                     } else {
                         routine.contents = text
                         try? viewContext.save()
-                        self.presentationMode.wrappedValue.dismiss()
+                        Utility.resetToRootView()
+                        AlertManager.shared.isShowingToast = true
                     }
                 }
             
@@ -46,24 +49,23 @@ struct RoutineEditView: View {
         }
         .padding(.top, 15)
         .padding(.horizontal, 20)
-        .clipShape(Rectangle())
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .overlay {
-            if isDeletePopupPresented {
-                ZStack {
-                    Color.black.opacity(0.3).ignoresSafeArea()
-                    DeletePopupView(isPresented: $isDeletePopupPresented) {
-                        viewContext.delete(routine)
-                        self.presentationMode.wrappedValue.dismiss()
-                    }
-                }
-            }
-        }
-        .task {
-            text = routine.contents ?? ""
-        }
+        .contentShape(Rectangle())
         .onTapGesture {
             isFocused = false
+        }
+        .popup(isPresented: $isDeletePopupPresented) {
+            DeletePopupView(isPresented: $isDeletePopupPresented) {
+                viewContext.delete(routine)
+                Utility.resetToRootView()
+            }
+        }
+        .popup(isPresented: $isEmptyPopupPresented) {
+            emptyPopup
+                .offset(y: -50)
+        }
+        .task {
+            isFocused = true
+            text = routine.contents ?? ""
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -86,8 +88,9 @@ struct RoutineEditView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Image("delete")
+                    .foregroundStyle(.gray400)
                     .onTapGesture {
-                        viewContext.delete(routine)
+                        isDeletePopupPresented.toggle()
                     }
             }
         }
@@ -98,11 +101,47 @@ struct RoutineEditView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .frame(height: 50)
-                .foregroundStyle(.monthgreen)
+                .foregroundStyle(Utility.mainColor)
             
             Text("Finish")
                 .font(.EBGaramond19)
                 .foregroundStyle(.white)
+        }
+    }
+    
+    var emptyPopup: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .foregroundStyle(.white)
+                .frame(width: 297, height: 193)
+            
+            VStack(spacing: 0) {
+                Text("Reminder")
+                    .font(.custom("Pretendard-SemiBold", size: 19))
+                    .foregroundStyle(.gray800)
+                    
+                Text("Enter a task to proceed.")
+                    .font(.custom("Pretendard-Regular", size: 16))
+                    .foregroundStyle(.gray700)
+                    .padding(.top, 12)
+                
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .foregroundStyle(Utility.mainColor)
+                        .frame(width: 265, height: 43)
+                    
+                    Text("Got it")
+                        .font(.custom("Pretendard-Medium", size: 15))
+                        .foregroundStyle(.white)
+                }
+                .padding(.top, 36)
+                .onTapGesture {
+                    isEmptyPopupPresented.toggle()
+                }
+            }
+            .padding(.top, 45)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 17)
         }
     }
 }
@@ -114,31 +153,31 @@ struct DeletePopupView: View {
     var body: some View {
         VStack(spacing: 0) {
             Text("Delete")
+                .font(.custom("Pretendard-SemiBold", size: 19))
                 .foregroundStyle(.gray800)
             
             Text("Are you sure you want\nto delete this item?")
+                .font(.custom("Pretendard-Regular", size: 16))
                 .foregroundStyle(.gray700)
                 .padding(.top, 12)
             
             HStack(spacing: 0) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .foregroundStyle(.clear)
-                        .frame(height: 43)
-                    
-                    Text("Cancel")
-                        .foregroundStyle(.gray600)
-                }
-                .onTapGesture {
-                    isPresented = false
-                }
+                Text("Cancel")
+                    .font(.custom("Pretendard-Medium", size: 15))
+                    .foregroundStyle(.gray600)
+                    .frame(width: 128, height: 43)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        isPresented = false
+                    }
                 
                 ZStack {
                     RoundedRectangle(cornerRadius: 10)
-                        .foregroundStyle(.monthgreen)
-                        .frame(height: 43)
+                        .foregroundStyle(Utility.mainColor)
+                        .frame(width: 128, height: 43)
                     
                     Text("Delete")
+                        .font(.custom("Pretendard-Medium", size: 15))
                         .foregroundStyle(.white)
                 }
                 .onTapGesture {
@@ -147,47 +186,11 @@ struct DeletePopupView: View {
                 }
             }
             .padding(.top, 30)
-            .padding(.bottom, 18)
         }
         .padding(.top, 30)
         .padding(.horizontal, 16)
-        .padding(.bottom, 18)
+        .padding(.bottom, 17)
         .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(.white))
         .padding(.horizontal, 48)
     }
-}
-
-struct ReminderView: View {
-    @Binding var isPresented: Bool
-    let title: String
-    let contents: String
-    let buttonText: String
-    let onAction: () -> Void
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            Text(title)
-            Text(contents)
-                .padding(.top, 12)
-                        
-            ZStack {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(height: 43)
-                    .foregroundStyle(.monthgreen)
-                Text(buttonText)
-                    .foregroundStyle(.white)
-            }
-            .padding(.top, 36)
-        }
-        .padding(.top, 45)
-        .padding(.horizontal, 16)
-        .padding(.bottom, 16)
-        .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(.white))
-        .padding(.horizontal, 48)
-    }
-}
-
-#Preview {
-//    DeletePopupView(isPresented: .constant(false)) {  }
-    ReminderView(isPresented: .constant(false), title: "Reminder", contents: "Select a task type to continue.", buttonText: "Got it") { }
 }
