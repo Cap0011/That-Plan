@@ -13,6 +13,7 @@ struct SortingView: View {
     
     @State private var selectedIndex: Int?
     @State private var isPopupPresented = false
+    @State private var isSavePopupPresented = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -68,17 +69,17 @@ struct SortingView: View {
                     }
                 } else {
                     if index == 1 {
-                        // TODO: Save the task, Return to HomeView and show toast message
+                        // TODO: Save the task
                         nextButton
                             .onTapGesture {
                                 AlertManager.shared.isShowingToast = true
                                 Utility.resetToRootView()
                             }
                     } else {
-                        // TODO: Save the task, Return to HomeView and show popup
+                        // TODO: Save the task
                         nextButton
                             .onTapGesture {
-                                Utility.resetToRootView()
+                                isSavePopupPresented = true
                             }
                     }
                 }
@@ -95,6 +96,10 @@ struct SortingView: View {
         .padding(.horizontal, 20)
         .popup(isPresented: $isPopupPresented) {
             selectPopup
+                .offset(y: -50)
+        }
+        .popup(isPresented: $isSavePopupPresented) {
+            savePopup
                 .offset(y: -50)
         }
         .background(.white)
@@ -172,6 +177,45 @@ struct SortingView: View {
                     isPopupPresented.toggle()
                 }
             }
+            .padding(.top, 45)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 17)
+        }
+    }
+    
+    var savePopup: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .foregroundStyle(.white)
+                .frame(width: 297, height: 193)
+            
+            VStack(spacing: 0) {
+                Text("Saved!")
+                    .font(.custom("Pretendard-SemiBold", size: 19))
+                    .foregroundStyle(.gray800)
+                    
+                Text("You can find it in the upper right\ndrawer of the home screen.")
+                    .font(.custom("Pretendard-Regular", size: 16))
+                    .foregroundStyle(.gray700)
+                    .padding(.top, 12)
+                
+                Spacer()
+                
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .foregroundStyle(Utility.mainColor)
+                        .frame(width: 265, height: 43)
+                    
+                    Text("Got it")
+                        .font(.custom("Pretendard-Medium", size: 15))
+                        .foregroundStyle(.white)
+                }
+                .onTapGesture {
+                    isSavePopupPresented = false
+                    Utility.resetToRootView()
+                }
+            }
+            .frame(height: 130)
             .padding(.top, 45)
             .padding(.horizontal, 16)
             .padding(.bottom, 17)
