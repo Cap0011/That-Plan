@@ -39,4 +39,11 @@ extension View {
                             isShowing: isShowing,
                             config: .init(duration: duration)))
     }
+    
+    func popup<PopupContent: View>(
+        isPresented: Binding<Bool>,
+        @ViewBuilder content: @escaping () -> PopupContent
+    ) -> some View {
+        self.modifier(Popup(isPresented: isPresented, popupContent: content))
+    }
 }
