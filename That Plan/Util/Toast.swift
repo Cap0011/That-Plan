@@ -43,6 +43,8 @@ struct Toast: ViewModifier {
                     }
                     .padding(.leading, 17)
                 }
+                .padding(.top, 60)
+                .padding(.horizontal, 20)
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + config.duration) {
                         isShowing = false

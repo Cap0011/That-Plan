@@ -15,6 +15,7 @@ struct HomeView: View {
     ) var tasks: FetchedResults<CDTask>
     
     @State var selectedDate = Date()
+    @StateObject var alertManager = AlertManager.shared
     
     var body: some View {
         VStack(spacing: 0) {
@@ -78,6 +79,7 @@ struct HomeView: View {
         .padding(.top, 60)
         .padding(.horizontal, 20)
         .background(.white)
+        .toast(message: "Task saved successfully!", isShowing: $alertManager.isShowingToast, duration: Toast.short)
     }
     
     var daily: some View {

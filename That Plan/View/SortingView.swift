@@ -59,22 +59,23 @@ struct SortingView: View {
                 TypeView(title: "Future Goal", index: 4, padding: 0, height: 116, selectedIndex: $selectedIndex)
             }
             .padding(.top, 10)
+            .padding(.bottom, 35)
             
             if let index = selectedIndex {
                 if index == 0 || index == 3 {
                     NavigationLink(destination: destinationView(for: index)) {
                         nextButton
-                            .padding(.top, 35)
                     }
                 } else {
                     if index == 1 {
-                        // TODO: Return to HomeView and show toast message
+                        // TODO: Save the task, Return to HomeView and show toast message
                         nextButton
                             .onTapGesture {
+                                AlertManager.shared.isShowingToast = true
                                 Utility.resetToRootView()
                             }
                     } else {
-                        // TODO: Return to HomeView and show popup
+                        // TODO: Save the task, Return to HomeView and show popup
                         nextButton
                             .onTapGesture {
                                 Utility.resetToRootView()
@@ -83,7 +84,6 @@ struct SortingView: View {
                 }
             } else {
                 nextButton
-                    .padding(.top, 35)
                     .onTapGesture {
                         isPopupPresented.toggle()
                     }
