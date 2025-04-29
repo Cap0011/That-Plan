@@ -15,6 +15,7 @@ extension Font {
     static let charisSIL20: Font = .custom("CharisSIL", size: 20)
     static let charisSILBold19: Font = .custom("CharisSIL-Bold", size: 19)
     static let charisSILBold20: Font = .custom("CharisSIL-Bold", size: 20)
+    static let EBGaramond17: Font = .custom("EBGaramond-Bold", size: 17)
     static let EBGaramond18: Font = .custom("EBGaramond-Bold", size: 18)
     static let EBGaramond19: Font = .custom("EBGaramond-Bold", size: 19)
     static let EBGaramond21: Font = .custom("EBGaramond-Bold", size: 21)

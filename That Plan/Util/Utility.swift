@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct Utility {
+    static let mainColor: Color = .main1
+    
     static func formattedTime(hour: Int, minute: Int) -> String {
         let ampm = hour >= 12 ? "pm" : "am"
         let formattedHour = hour % 12 == 0 ? 12 : hour % 12
