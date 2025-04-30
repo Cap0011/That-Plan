@@ -123,10 +123,12 @@ struct HomeView: View {
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(tasks.filter { $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }, id: \.id) { task in
-                        ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
-                            task.isCompleted = newValue
-                            try? viewContext.save()
-                        }), time: nil)
+                        NavigationLink(destination: DetailView(task: task)) {
+                            ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
+                                task.isCompleted = newValue
+                                try? viewContext.save()
+                            }), time: nil)
+                        }
                     }
                 }
                 
@@ -146,10 +148,12 @@ struct HomeView: View {
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(Utility.sortedTasks(tasks: Array(tasks), date: selectedDate), id: \.id) { task in
-                        ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
-                            task.isCompleted = newValue
-                            try? viewContext.save()
-                        }), time: task.hour > 0 && task.minute > 0 ? Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)) : nil)
+                        NavigationLink(destination: DetailView(task: task)) {
+                            ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
+                                task.isCompleted = newValue
+                                try? viewContext.save()
+                            }), time: task.hour > 0 && task.minute > 0 ? Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)) : nil)
+                        }
                     }
                 }
                 
