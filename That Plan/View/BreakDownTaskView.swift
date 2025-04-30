@@ -18,10 +18,16 @@ struct BreakDownTaskView: View {
     
     @State private var pageIndex = 0
     @State private var selectedIndex: Int?
+    
     @State private var date = Date()
+    @State private var time = Date()
     @State private var hour: Int?
     @State private var minute: Int?
     @State private var isNotificationOn = false
+    @State private var isCalendarOpen = false
+    @State private var isTimeOpen = false
+    
+    @State private var isPopupPresented = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -39,7 +45,14 @@ struct BreakDownTaskView: View {
         .onChange(of: pageIndex / 2) { _ in
             resetValues()
         }
+        .onChange(of: time) { newValue in
+            hour = newValue.get(.hour)
+            minute = newValue.get(.minute)
+        }
         .padding(.horizontal, 20)
+        .popup(isPresented: $isPopupPresented) {
+            selectPopup
+        }
         .background(.white)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -72,6 +85,7 @@ struct BreakDownTaskView: View {
                         if pageIndex == 2 * texts.count - 1 {
                             updateTask()
                             addTasks()
+                            AlertManager.shared.isShowingToast.toggle()
                             Utility.resetToRootView()
                         } else {
                             if pageIndex % 2 == 1 {
@@ -105,7 +119,7 @@ struct BreakDownTaskView: View {
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
-                .padding(.top, 16)
+                .padding(.top, 32)
             
             HStack {
                 Spacer()
@@ -129,13 +143,13 @@ struct BreakDownTaskView: View {
                     if selectedIndex != nil {
                         pageIndex += 1
                     } else {
-                        // TODO: Alert !
-                        print("Task type hasn't selected yet.")
+                        isPopupPresented.toggle()
                     }
                 }
             
             Spacer()
         }
+        .padding(.top, 15)
     }
     
     var dateSelection: some View {
@@ -157,8 +171,9 @@ struct BreakDownTaskView: View {
                 .padding(.vertical, 18)
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
+                .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background0))
                 .padding(.top, 32)
+                .lineLimit(1)
             
             VStack(alignment: .leading, spacing: 22) {
                 dateSet
@@ -173,13 +188,14 @@ struct BreakDownTaskView: View {
             
             Spacer()
         }
+        .padding(.top, 15)
     }
     
     var nextButton: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .frame(height: 50)
-                .foregroundStyle(.monthgreen)
+                .foregroundStyle(Utility.mainColor)
             
             Text("Next")
                 .font(.EBGaramond19)
@@ -187,57 +203,150 @@ struct BreakDownTaskView: View {
         }
     }
     
-    var dateSet: some View {
-        HStack(spacing: 0) {
-            Image("calendar_month")
+    var selectPopup: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .foregroundStyle(.white)
+                .frame(width: 297, height: 193)
             
-            Text("Date")
-                .font(.EBGaramondMedium19)
-                .foregroundStyle(.black)
-                .padding(.leading, 9)
-            
-            ZStack {
-                RoundedRectangle(cornerRadius: 7)
-                    .foregroundStyle(.boxbackground)
-                    .frame(width: 100, height: 34)
+            VStack(spacing: 0) {
+                Text("Reminder")
+                    .font(.custom("Pretendard-SemiBold", size: 19))
+                    .foregroundStyle(.gray800)
+                    
+                Text("Select a task type to continue.")
+                    .font(.custom("Pretendard-Regular", size: 16))
+                    .foregroundStyle(.gray700)
+                    .padding(.top, 12)
                 
-                Text(date.formattedString(format: "yy.MM.dd"))
-                    .font(.charisSIL16)
-                    .foregroundStyle(.gray900)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .foregroundStyle(Utility.mainColor)
+                        .frame(width: 265, height: 43)
+                    
+                    Text("Got it")
+                        .font(.custom("Pretendard-Medium", size: 15))
+                        .foregroundStyle(.white)
+                }
+                .padding(.top, 36)
+                .onTapGesture {
+                    isPopupPresented.toggle()
+                }
             }
-            .padding(.leading, 56)
-            .onTapGesture {
-                // TODO: Open Calendar
+            .padding(.top, 45)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 17)
+        }
+    }
+    
+    var saveButton: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 7)
+                .frame(width: 81, height: 32)
+                .foregroundStyle(Utility.mainColor.opacity(0.1))
+            
+            Text("Save")
+                .font(.EBGaramondSemibold17)
+                .foregroundStyle(Utility.mainColor)
+        }
+    }
+    
+    var dateSet: some View {
+        VStack(spacing: 10) {
+            HStack(spacing: 0) {
+                Image("calendar_month")
+                
+                Text("Date")
+                    .font(.EBGaramondMedium19)
+                    .foregroundStyle(.black)
+                    .padding(.leading, 9)
+                
+                if !isCalendarOpen {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7)
+                            .foregroundStyle(.boxbackground)
+                            .frame(width: 100, height: 34)
+                        
+                        Text(date.formattedString(format: "yy.MM.dd"))
+                            .font(.charisSIL16)
+                            .foregroundStyle(.gray900)
+                    }
+                    .padding(.leading, 56)
+                    .onTapGesture {
+                        withAnimation {
+                            isCalendarOpen = true
+                            isTimeOpen = false
+                        }
+                    }
+                } else {
+                    Spacer()
+                    
+                    saveButton
+                    .onTapGesture {
+                        withAnimation {
+                            isCalendarOpen = false
+                        }
+                    }
+                }
+            }
+            
+            if isCalendarOpen {
+                CalendarView(selectedDate: $date, tasks: [CDTask](), isPicker: true)
             }
         }
     }
     
     var timeSet: some View {
-        HStack(spacing: 0) {
-            Image("schedule")
-            
-            Text("Time")
-                .font(.EBGaramondMedium19)
-                .foregroundStyle(.black)
-                .padding(.leading, 9)
-            
-            ZStack {
-                RoundedRectangle(cornerRadius: 7)
-                    .foregroundStyle(.boxbackground)
-                    .frame(width: 100, height: 34)
+        VStack(spacing: 10) {
+            HStack(spacing: 0) {
+                Image("schedule")
                 
-                if let hour = hour, let minute = minute {
-                    Text("\(hour):\(minute)")
-                        .foregroundStyle(.black)
+                Text("Time")
+                    .font(.EBGaramondMedium19)
+                    .foregroundStyle(.black)
+                    .padding(.leading, 9)
+                
+                if !isTimeOpen {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7)
+                            .foregroundStyle(.boxbackground)
+                            .frame(width: 100, height: 34)
+                        
+                        if let hour = hour, let minute = minute {
+                            Text("\(hour < 10 ? "0" : "")\(hour):\(minute < 10 ? "0" : "")\(minute)")
+                                .foregroundStyle(.black)
+                        } else {
+                            Text("None")
+                                .foregroundStyle(.gray500)
+                        }
+                    }
+                    .font(.charisSIL16)
+                    .padding(.leading, 52)
+                    .onTapGesture {
+                        withAnimation {
+                            isTimeOpen = true
+                            isCalendarOpen = false
+                        }
+                    }
                 } else {
-                    Text("None")
-                        .foregroundStyle(.gray500)
+                    Spacer()
+                    
+                    saveButton
+                        .onTapGesture {
+                            hour = time.get(.hour)
+                            minute = time.get(.minute)
+                            
+                            withAnimation {
+                                isTimeOpen = false
+                            }
+                        }
                 }
             }
-            .font(.charisSIL16)
-            .padding(.leading, 52)
-            .onTapGesture {
-                // TODO: Open time picker
+            
+            if isTimeOpen {
+                DatePicker("", selection: $time, displayedComponents: .hourAndMinute)
+                    .datePickerStyle(.wheel)
+                    .colorScheme(.light)
             }
         }
     }
