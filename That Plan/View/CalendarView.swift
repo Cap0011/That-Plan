@@ -20,7 +20,7 @@ struct CalendarView: View {
     @State private var calendarSize = 0.0
     @State private var month = 1
     @State private var year = 1
-    @State private var days = Array(1...30)
+    @State private var days = [Int]()
     
     var body: some View {
         VStack(spacing: 0) {
@@ -40,20 +40,24 @@ struct CalendarView: View {
                 Image("chevron_backward")
                     .frame(width: 23, height: 23)
                     .onTapGesture {
-                        if month == 1 {
-                            year -= 1
+                        withAnimation {
+                            if month == 1 {
+                                year -= 1
+                            }
+                            month = (month + 10) % 12 + 1
                         }
-                        month = (month + 10) % 12 + 1
                     }
                 
                 Image("chevron_forward")
                     .frame(width: 23, height: 23)
                     .padding(.leading, 10)
                     .onTapGesture {
-                        if month == 12 {
-                            year += 1
+                        withAnimation {
+                            if month == 12 {
+                                year += 1
+                            }
+                            month = month % 12 + 1
                         }
-                        month = month % 12 + 1
                     }
             }
             .padding(.bottom, 15)
@@ -88,6 +92,7 @@ struct CalendarView: View {
             .padding(.horizontal, -4)
             .padding(.top, 18)
         }
+        .colorScheme(.light)
         .padding(.top, 20)
         .padding(.horizontal, 24)
         .padding(.bottom, 26)
@@ -99,9 +104,6 @@ struct CalendarView: View {
         }
         .onChange(of: month) { _ in
             updateDays()
-            if selectedDate.get(.month) != month {
-                selectedDate = Date.date(year: year, month: month, day: 1)
-            }
         }
         .readSize { size in
             calendarSize = size.width - 50
@@ -150,7 +152,9 @@ struct CalendarView: View {
     }
     
     private func updateDays() {
-        days = Array(repeating: 0, count: calendar.component(.weekday, from: Date.date(year: year, month: month, day: 1)) - 1) +
-        Array(calendar.range(of: .day, in: .month, for: Date.date(year: year, month: month, day: 1)) ?? 1..<30)
+        withAnimation {
+            days = Array(repeating: 0, count: calendar.component(.weekday, from: Date.date(year: year, month: month, day: 1)) - 1) +
+            Array(calendar.range(of: .day, in: .month, for: Date.date(year: year, month: month, day: 1)) ?? 1..<30)
+        }
     }
 }

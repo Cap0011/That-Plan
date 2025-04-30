@@ -205,7 +205,9 @@ struct HomeView: View {
                 .foregroundStyle(isItToday ? .white : .unselected)
                 
                 if Calendar.current.isDate(selectedDate, inSameDayAs: date) && !isItToday {
-                    Image("ellipse")
+                    Circle()
+                        .frame(width: 5, height: 5)
+                        .foregroundStyle(Utility.mainColor)
                         .offset(y: 30)
                 }
             }
