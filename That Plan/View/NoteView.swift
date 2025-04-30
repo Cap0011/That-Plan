@@ -19,12 +19,20 @@ struct NoteView: View {
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
-            
-            ScrollView {
-                if tasks.isEmpty {
-                    // TODO: Should be replaced with proper empty view
+            if tasks.isEmpty {
+                VStack(spacing: 13) {
+                    Text("No tasks to save in this note.")
+                        .font(.cabin16)
+                        .foregroundStyle(.gray600)
                     
-                } else {
+                    Text("Shows 'information' and 'Future Goal' tasks.\nAdded items appear automatically.")
+                        .font(.cabin14)
+                        .foregroundStyle(.gray500)
+                        .multilineTextAlignment(.center)
+                }
+                .offset(y: -50)
+            } else {
+                ScrollView {
                     VStack(spacing: 9) {
                         ForEach(Array(tasks), id: \.id) { task in
                             NavigationLink(destination: DetailView(task: task)) {
@@ -38,26 +46,26 @@ struct NoteView: View {
                     .padding(.horizontal, 19)
                     .background(.white)
                 }
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
-            .navigationBarBackButtonHidden()
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Image(systemName: "chevron.backward")
-                        .foregroundStyle(.backgray)
-                        .frame(width: 40, height: 40)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            self.presentationMode.wrappedValue.dismiss()
-                        }
-                }
-                
-                ToolbarItem(placement: .principal) {
-                    Text("Note")
-                        .font(.EBGaramond18)
-                        .foregroundStyle(.black)
-                }
+        }
+        .navigationBarBackButtonHidden()
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Image(systemName: "chevron.backward")
+                    .foregroundStyle(.backgray)
+                    .frame(width: 40, height: 40)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("Note")
+                    .font(.EBGaramond18)
+                    .foregroundStyle(.black)
             }
         }
     }

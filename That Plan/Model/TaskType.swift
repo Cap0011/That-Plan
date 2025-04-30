@@ -26,7 +26,7 @@ enum TaskType {
         case .daily: return "Daily: Please select the most suitable category for this task."
         case .information: return "Information: Please select the most suitable category for this task."
         case .shortterm: return "Short term: Please select the most suitable category for this task."
-        case .future: return "Future: Please select the most suitable category for this task."
+        case .future: return "Please select the most suitable category for this task."
         }
     }
     
