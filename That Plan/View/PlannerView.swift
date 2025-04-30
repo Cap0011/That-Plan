@@ -43,7 +43,7 @@ struct PlannerView: View {
             }
             .padding(.horizontal, 20)
             
-            CalendarView(selectedDate: $selectedDate, tasks: Array(tasks))
+            CalendarView(selectedDate: $selectedDate, tasks: Array(tasks), isPicker: false)
                 .padding(.top, 25)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 22)

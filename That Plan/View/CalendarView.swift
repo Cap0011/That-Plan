@@ -10,6 +10,7 @@ import SwiftUI
 struct CalendarView: View {
     @Binding var selectedDate: Date
     let tasks: [CDTask]
+    let isPicker: Bool
     
     let calendar = Calendar.current
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 7)
@@ -75,7 +76,7 @@ struct CalendarView: View {
                             isEmpty: tasks.filter({
                                 ($0.type == TaskType.quick.text || $0.type == TaskType.todo.text) &&
                                 Calendar.current.isDate($0.date ?? Date(), inSameDayAs: Date.date(year: year, month: month, day: days[index]))
-                            }).isEmpty,
+                            }).isEmpty, isPicker: isPicker,
                             selectedDate: $selectedDate
                         )
                     } else {
@@ -110,6 +111,7 @@ struct CalendarView: View {
     struct dayItem: View {
         let day: Date
         let isEmpty: Bool
+        let isPicker: Bool
         
         @Binding var selectedDate: Date
         
@@ -118,12 +120,12 @@ struct CalendarView: View {
                 ZStack {
                     Circle()
                         .frame(width: 27, height: 27)
-                        .foregroundStyle(Calendar.current.isDateInToday(day) ? Utility.mainColor : .clear)
+                        .foregroundStyle((!isPicker && Calendar.current.isDateInToday(day)) || isPicker && Calendar.current.isDate(day, inSameDayAs: selectedDate) ? Utility.mainColor : .clear)
                         .offset(y: 1)
                     
                     Text("\(day.get(.day))")
                         .font(.charisSIL16)
-                        .foregroundStyle(Calendar.current.isDateInToday(day) ? .white : .daygray)
+                        .foregroundStyle((!isPicker && Calendar.current.isDateInToday(day)) || isPicker && Calendar.current.isDate(day, inSameDayAs: selectedDate) ? .white : .daygray)
                         .frame(height: 24)
                 }
                 
@@ -134,7 +136,7 @@ struct CalendarView: View {
                         .offset(y: 10)
                 }
                 
-                if Calendar.current.isDate(day, inSameDayAs: selectedDate) {
+                if !isPicker && Calendar.current.isDate(day, inSameDayAs: selectedDate) {
                     Circle()
                         .frame(width: 6, height: 6)
                         .foregroundStyle(Utility.mainColor)

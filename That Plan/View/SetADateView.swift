@@ -19,6 +19,8 @@ struct SetADateView: View {
     @State private var minute: Int?
     @State private var isNotificationOn = false
     
+    @State private var isCalendarOpen = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Set a date")
@@ -38,7 +40,7 @@ struct SetADateView: View {
                 .padding(.vertical, 18)
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
+                .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.background0))
                 .padding(.top, 32)
             
             VStack(alignment: .leading, spacing: 22) {
@@ -83,26 +85,53 @@ struct SetADateView: View {
     }
     
     var dateSet: some View {
-        HStack(spacing: 0) {
-            Image("calendar_month")
-            
-            Text("Date")
-                .font(.EBGaramondMedium19)
-                .foregroundStyle(.black)
-                .padding(.leading, 9)
-            
-            ZStack {
-                RoundedRectangle(cornerRadius: 7)
-                    .foregroundStyle(.boxbackground)
-                    .frame(width: 100, height: 34)
+        VStack(spacing: 10) {
+            HStack(spacing: 0) {
+                Image("calendar_month")
                 
-                Text(date.formattedString(format: "yy.MM.dd"))
-                    .font(.charisSIL16)
-                    .foregroundStyle(.gray900)
+                Text("Date")
+                    .font(.EBGaramondMedium19)
+                    .foregroundStyle(.black)
+                    .padding(.leading, 9)
+                
+                if !isCalendarOpen {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7)
+                            .foregroundStyle(.boxbackground)
+                            .frame(width: 100, height: 34)
+                        
+                        Text(date.formattedString(format: "yy.MM.dd"))
+                            .font(.charisSIL16)
+                            .foregroundStyle(.gray900)
+                    }
+                    .padding(.leading, 56)
+                    .onTapGesture {
+                        withAnimation {
+                            isCalendarOpen = true
+                        }
+                    }
+                } else {
+                    Spacer()
+                    
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 7)
+                            .frame(width: 81, height: 32)
+                            .foregroundStyle(Utility.mainColor.opacity(0.1))
+                        
+                        Text("Save")
+                            .font(.EBGaramondSemibold17)
+                            .foregroundStyle(Utility.mainColor)
+                    }
+                    .onTapGesture {
+                        withAnimation {
+                            isCalendarOpen = false
+                        }
+                    }
+                }
             }
-            .padding(.leading, 56)
-            .onTapGesture {
-                // TODO: Open Calendar
+            
+            if isCalendarOpen {
+                CalendarView(selectedDate: $date, tasks: [CDTask](), isPicker: true)
             }
         }
     }
