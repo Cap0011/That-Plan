@@ -84,6 +84,7 @@ struct SetADateView: View {
                     .font(.EBGaramond19)
                     .foregroundStyle(.black)
                     .onTapGesture {
+                        // TODO: Notification Set
                         addTask()
                         AlertManager.shared.isShowingToast.toggle()
                         withAnimation {

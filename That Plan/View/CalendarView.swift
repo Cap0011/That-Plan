@@ -97,7 +97,7 @@ struct CalendarView: View {
         .padding(.horizontal, 24)
         .padding(.bottom, 26)
         .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(Utility.mainColor.opacity(0.05)))
-        .onAppear {
+        .task {
             year = selectedDate.get(.year)
             month = selectedDate.get(.month)
             updateDays()
@@ -152,9 +152,7 @@ struct CalendarView: View {
     }
     
     private func updateDays() {
-        withAnimation {
-            days = Array(repeating: 0, count: calendar.component(.weekday, from: Date.date(year: year, month: month, day: 1)) - 1) +
-            Array(calendar.range(of: .day, in: .month, for: Date.date(year: year, month: month, day: 1)) ?? 1..<30)
-        }
+        days = Array(repeating: 0, count: calendar.component(.weekday, from: Date.date(year: year, month: month, day: 1)) - 1) +
+        Array(calendar.range(of: .day, in: .month, for: Date.date(year: year, month: month, day: 1)) ?? 1..<30)
     }
 }

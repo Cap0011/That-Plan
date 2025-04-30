@@ -16,6 +16,8 @@ struct ShortGoalView: View {
     @State private var tasks = [String]()
     @FocusState private var isFocused: Bool
     
+    @State private var isPopupPresented = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Goal Refinement")
@@ -50,18 +52,20 @@ struct ShortGoalView: View {
             if !isExpanded {
                 addButton
                     .onTapGesture {
+                        isFocused = true
                         isExpanded.toggle()
                     }
             } else {
                 TextEditor(text: $newText)
+                    .focused($isFocused)
                     .kerning(0.2)
                     .font(.cabin17)
                     .foregroundStyle(.black)
                     .scrollContentBackground(.hidden)
                     .lineSpacing(5)
                     .frame(height: 124)
-                    .padding(.vertical, 18)
-                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 12)
                     .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
                 
                 finishButton
@@ -103,7 +107,10 @@ struct ShortGoalView: View {
         }
         .padding(.top, 15)
         .padding(.horizontal, 20)
-        .clipShape(Rectangle())
+        .popup(isPresented: $isPopupPresented) {
+            emptyPopup
+        }
+        .contentShape(Rectangle())
         .onTapGesture {
             isFocused = false
         }
@@ -122,10 +129,19 @@ struct ShortGoalView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink(destination: BreakDownGuideView(goal: text, texts: tasks)) {
+                if tasks.isEmpty {
                     Text("Next")
                         .font(.EBGaramond19)
-                        .foregroundStyle(.nextgreen)
+                        .foregroundStyle(Utility.mainColor.opacity(0.7))
+                        .onTapGesture {
+                            isPopupPresented.toggle()
+                        }
+                } else {
+                    NavigationLink(destination: BreakDownGuideView(goal: text, texts: tasks)) {
+                        Text("Next")
+                            .font(.EBGaramond19)
+                            .foregroundStyle(Utility.mainColor.opacity(0.7))
+                    }
                 }
             }
         }
@@ -145,11 +161,49 @@ struct ShortGoalView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .frame(height: 50)
-                .foregroundStyle(.monthgreen)
+                .foregroundStyle(Utility.mainColor)
             
             Text("Finish")
                 .font(.EBGaramond19)
                 .foregroundStyle(.white)
+        }
+    }
+    
+    var emptyPopup: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .foregroundStyle(.white)
+                .frame(width: 297, height: 193)
+            
+            VStack(spacing: 0) {
+                Text("Reminder")
+                    .font(.custom("Pretendard-SemiBold", size: 19))
+                    .foregroundStyle(.gray800)
+                    
+                Text("Create a new plan to break down\nyour short-term goals.")
+                    .font(.custom("Pretendard-Regular", size: 16))
+                    .foregroundStyle(.gray700)
+                    .padding(.top, 12)
+                    .multilineTextAlignment(.center)
+                
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .foregroundStyle(Utility.mainColor)
+                        .frame(width: 265, height: 43)
+                    
+                    Text("Got it")
+                        .font(.custom("Pretendard-Medium", size: 15))
+                        .foregroundStyle(.white)
+                }
+                .padding(.top, 29)
+                .padding(.bottom, 17)
+                .onTapGesture {
+                    isPopupPresented.toggle()
+                }
+            }
+            .padding(.top, 45)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 17)
         }
     }
 }
