@@ -1,0 +1,76 @@
+//
+//  NotificationSettingView.swift
+//  That Plan
+//
+//  Created by Jiyoung Park on 5/1/25.
+//
+
+import SwiftUI
+
+struct NotificationSettingView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
+    @State private var isDailyOn = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ToggleRow(title: "Daily Plan Reminders", isOn: $isDailyOn)
+            
+            Spacer()
+        }
+        .padding(.top, 20)
+        .padding(.horizontal, 20)
+        .background(.white)
+        .navigationBarBackButtonHidden()
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Image(systemName: "chevron.backward")
+                    .foregroundStyle(.backgray)
+                    .frame(width: 40, height: 40)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("Notification Settings")
+                    .font(.cabinSemibold16)
+                    .foregroundStyle(.gray800)
+            }
+        }
+    }
+    
+    struct ToggleRow: View {
+        let title: String
+        @Binding var isOn: Bool
+        
+        var body: some View {
+            VStack(spacing: 0) {
+                HStack {
+                    Text(title)
+                        .font(.cabinMedium16)
+                        .foregroundStyle(.gray700)
+                    
+                    Spacer()
+                    
+                    Image("toggle_\(isOn ? "on" : "off")")
+                        .frame(width: 23, height: 23)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation {
+                                isOn.toggle()
+                            }
+                        }
+                }
+                .padding(.vertical, 20)
+            }
+            .contentShape(Rectangle())
+        }
+    }
+}
+
+#Preview {
+    NotificationSettingView()
+}

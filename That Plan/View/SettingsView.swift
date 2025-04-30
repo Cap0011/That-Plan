@@ -89,7 +89,7 @@ struct SettingsView: View {
         case 2:
             return AnyView(AnnouncementView())
         default:
-            return AnyView(HomeView())
+            return AnyView(NotificationSettingView())
         }
     }
     
