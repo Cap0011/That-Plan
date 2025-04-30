@@ -44,9 +44,11 @@ struct PlannerView: View {
                     }
                 }
             }
+            .padding(.horizontal, 20)
             
             planner
                 .padding(.top, 25)
+                .padding(.horizontal, 20)
                 .padding(.bottom, 22)
             
             if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
@@ -80,7 +82,6 @@ struct PlannerView: View {
             }
         }
         .padding(.top, 60)
-        .padding(.horizontal, 20)
         .background(.white)
     }
     
@@ -165,14 +166,17 @@ struct PlannerView: View {
             Text("Quick")
                 .font(.EBGaramond19)
                 .foregroundStyle(.gray600)
+                .padding(.horizontal, 20)
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
                     ForEach(tasks.filter { $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }, id: \.id) { task in
-                        ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
-                            task.isCompleted = newValue
-                            try? viewContext.save()
-                        }), time: nil)
+                        NavigationLink(destination: DetailView(task: task)) {
+                            ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
+                                task.isCompleted = newValue
+                                try? viewContext.save()
+                            }), time: nil)
+                        }
                     }
                 }
                 
@@ -187,14 +191,17 @@ struct PlannerView: View {
             Text("Today")
                 .foregroundStyle(.black)
                 .font(.EBGaramond19)
+                .padding(.horizontal, 20)
             
             HStack(spacing: 0) {
                 VStack(alignment: .leading, spacing: 20) {
                     ForEach(Utility.sortedTasks(tasks: Array(tasks), date: selectedDate), id: \.id) { task in
-                        ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
-                            task.isCompleted = newValue
-                            try? viewContext.save()
-                        }), time: task.hour > 0 && task.minute > 0 ? Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)) : nil)
+                        NavigationLink(destination: DetailView(task: task)) {
+                            ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
+                                task.isCompleted = newValue
+                                try? viewContext.save()
+                            }), time: task.hour > 0 && task.minute > 0 ? Utility.formattedTime(hour: Int(task.hour), minute: Int(task.minute)) : nil)
+                        }
                     }
                 }
                 
