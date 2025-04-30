@@ -86,6 +86,8 @@ struct SettingsView: View {
             return AnyView(ColorSettingView())
         case 1:
             return AnyView(PrivacyPolicyView())
+        case 2:
+            return AnyView(AnnouncementView())
         default:
             return AnyView(HomeView())
         }

@@ -34,4 +34,5 @@ extension Font {
     static let cabin16: Font = .custom("Cabin-Regular", size: 16)
     static let cabin17: Font = .custom("Cabin-Regular", size: 17)
     static let cabinMedium16: Font = .custom("Cabin-Medium", size: 16)
+    static let cabinSemibold16: Font = .custom("Cabin-SemiBold", size: 16)
 }

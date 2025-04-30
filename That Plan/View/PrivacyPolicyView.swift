@@ -30,6 +30,7 @@ struct PrivacyPolicyView: View {
             .padding(.top, 20)
             .padding(.horizontal, 20)
         }
+        .background(.white)
         .scrollIndicators(.hidden)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -46,8 +47,8 @@ struct PrivacyPolicyView: View {
             
             ToolbarItem(placement: .principal) {
                 Text("Terms of Service & Privacy Policy")
-                    .font(.EBGaramond18)
-                    .foregroundStyle(.black)
+                    .font(.cabinSemibold16)
+                    .foregroundStyle(.gray800)
             }
         }
     }

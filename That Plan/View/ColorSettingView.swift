@@ -60,8 +60,8 @@ struct ColorSettingView: View {
             
             ToolbarItem(placement: .principal) {
                 Text("Themes & Color")
-                    .font(.EBGaramond18)
-                    .foregroundStyle(.black)
+                    .font(.cabinSemibold16)
+                    .foregroundStyle(.gray800)
             }
         }
     }
