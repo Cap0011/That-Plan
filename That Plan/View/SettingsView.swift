@@ -84,6 +84,8 @@ struct SettingsView: View {
         switch index {
         case 0:
             return AnyView(ColorSettingView())
+        case 1:
+            return AnyView(PrivacyPolicyView())
         default:
             return AnyView(HomeView())
         }
