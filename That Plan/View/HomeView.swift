@@ -48,7 +48,7 @@ struct HomeView: View {
                         .padding(.horizontal, 20)
                 }
                 
-                if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
+                if tasks.filter({ ($0.type == TaskType.quick.text || $0.type == TaskType.todo.text) && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
                     VStack(spacing: 13) {
                         Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
                             .font(.cabinMedium16)
@@ -64,12 +64,12 @@ struct HomeView: View {
                 } else {
                     VStack(alignment: .leading, spacing: 0) {
                         
-                        if !tasks.filter({ $0.type == TaskType.quick.text }).isEmpty {
+                        if !tasks.filter({ $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
                             quick
                                 .padding(.top, 34)
                         }
                         
-                        if !tasks.filter({ $0.type == TaskType.todo.text }).isEmpty {
+                        if !tasks.filter({ $0.type == TaskType.todo.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
                             today
                                 .padding(.top, 40)
                         }

@@ -51,7 +51,7 @@ struct PlannerView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 22)
             
-            if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
+            if tasks.filter({ ($0.type == TaskType.quick.text || $0.type == TaskType.todo.text) && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
                 VStack(spacing: 13) {
                     Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
                         .font(.cabinMedium16)
@@ -68,13 +68,13 @@ struct PlannerView: View {
             } else {
                 ScrollView(.vertical) {
                     VStack(alignment: .leading, spacing: 0) {
-                        if !tasks.filter({ $0.type == TaskType.quick.text }).isEmpty {
+                        if !tasks.filter({ $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
                             quick
+                                .padding(.bottom, 38)
                         }
                         
-                        if !tasks.filter({ $0.type == TaskType.todo.text }).isEmpty {
+                        if !tasks.filter({ $0.type == TaskType.todo.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
                             today
-                                .padding(.top, 38)
                         }
                     }
                 }
@@ -169,7 +169,7 @@ struct PlannerView: View {
                 .padding(.horizontal, 20)
             
             HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(tasks.filter { $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }, id: \.id) { task in
                         NavigationLink(destination: DetailView(task: task)) {
                             ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
@@ -182,7 +182,7 @@ struct PlannerView: View {
                 
                 Spacer()
             }
-            .padding(.top, 20)
+            .padding(.top, 10)
         }
     }
     
@@ -194,7 +194,7 @@ struct PlannerView: View {
                 .padding(.horizontal, 20)
             
             HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(Utility.sortedTasks(tasks: Array(tasks), date: selectedDate), id: \.id) { task in
                         NavigationLink(destination: DetailView(task: task)) {
                             ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
@@ -207,7 +207,7 @@ struct PlannerView: View {
                 
                 Spacer()
             }
-            .padding(.top, 20)
+            .padding(.top, 10)
         }
     }
     
