@@ -263,8 +263,8 @@ struct SortingView: View {
                 
                 VStack(spacing: 14 + padding) {
                     Image("type\(index)")
-                        .resizable()
-                        .frame(width: 44, height: 44)
+                        .renderingMode(.template)
+                        .foregroundStyle(selectedIndex == index ? Utility.mainColor : .white)
                     
                     Text(title)
                         .font(.EBGaramondMedium16)

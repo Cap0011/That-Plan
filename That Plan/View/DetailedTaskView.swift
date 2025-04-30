@@ -12,6 +12,7 @@ struct DetailedTaskView: View {
     let text: String
     
     @State private var selectedIndex: Int?
+    @State private var isPopupPresented = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -60,7 +61,7 @@ struct DetailedTaskView: View {
                 nextButton
                     .padding(.top, 35)
                     .onTapGesture {
-                        // TODO: Alert !
+                        isPopupPresented.toggle()
                     }
             }
             
@@ -68,6 +69,9 @@ struct DetailedTaskView: View {
         }
         .padding(.top, 15)
         .padding(.horizontal, 20)
+        .popup(isPresented: $isPopupPresented) {
+            selectPopup
+        }
         .background(.white)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -87,14 +91,14 @@ struct DetailedTaskView: View {
                     NavigationLink(destination: SetADateView(text: text, index: index)) {
                         Text("Next")
                             .font(.EBGaramond19)
-                            .foregroundStyle(.nextgreen)
+                            .foregroundStyle(Utility.mainColor.opacity(0.7))
                     }
                 } else {
                     Text("Next")
                         .font(.EBGaramond19)
-                        .foregroundStyle(.nextgreen)
+                        .foregroundStyle(Utility.mainColor.opacity(0.7))
                         .onTapGesture {
-                            // TODO: Alert !
+                            isPopupPresented.toggle()
                         }
                 }
             }
@@ -105,11 +109,47 @@ struct DetailedTaskView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .frame(height: 50)
-                .foregroundStyle(.monthgreen)
+                .foregroundStyle(Utility.mainColor)
             
             Text("Next")
                 .font(.EBGaramond19)
                 .foregroundStyle(.white)
+        }
+    }
+    
+    var selectPopup: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .foregroundStyle(.white)
+                .frame(width: 297, height: 193)
+            
+            VStack(spacing: 0) {
+                Text("Reminder")
+                    .font(.custom("Pretendard-SemiBold", size: 19))
+                    .foregroundStyle(.gray800)
+                    
+                Text("Select a task type to continue.")
+                    .font(.custom("Pretendard-Regular", size: 16))
+                    .foregroundStyle(.gray700)
+                    .padding(.top, 12)
+                
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .foregroundStyle(Utility.mainColor)
+                        .frame(width: 265, height: 43)
+                    
+                    Text("Got it")
+                        .font(.custom("Pretendard-Medium", size: 15))
+                        .foregroundStyle(.white)
+                }
+                .padding(.top, 36)
+                .onTapGesture {
+                    isPopupPresented.toggle()
+                }
+            }
+            .padding(.top, 45)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 17)
         }
     }
 }
@@ -123,13 +163,21 @@ struct TypeView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             RoundedRectangle(cornerRadius: 15)
+                .strokeBorder(selectedIndex == index ? Utility.mainColor : .clear, lineWidth: 4)
+                .background(RoundedRectangle(cornerRadius: 15).foregroundStyle(.black))
                 .foregroundStyle(.black)
-                .frame(height: 109)
+                .frame(height: 116)
             
-            Text(title)
-                .font(.EBGaramondMedium16)
-                .foregroundStyle(.white)
-                .padding(.bottom, 19)
+            VStack(spacing: 14) {
+                Image("detail\(index)")
+                    .renderingMode(.template)
+                    .foregroundStyle(index == selectedIndex ? Utility.mainColor : .white)
+                
+                Text(title)
+                    .font(.EBGaramondMedium16)
+                    .foregroundStyle(selectedIndex == index ? Utility.mainColor : .white)
+                    .padding(.bottom, 19)
+            }
         }
         .onTapGesture {
             selectedIndex = index
