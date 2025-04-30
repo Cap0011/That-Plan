@@ -15,7 +15,7 @@ struct BreakDownGuideView: View {
     
     var body: some View {
         ZStack {
-            Color.monthgreen.ignoresSafeArea()
+            Utility.mainColor.ignoresSafeArea()
             VStack(spacing: 18) {
                 Text("Before We move on")
                     .font(.EBGaramond28)
@@ -24,18 +24,18 @@ struct BreakDownGuideView: View {
                     .multilineTextAlignment(.center)
                     .font(.cabin16)
                     .kerning(0.3)
+                    .lineSpacing(2)
                 
-                // TODO: Replace with real graphic image
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(height: 200)
-                    .foregroundStyle(.gray700)
+                Image("GuideView")
+                    .padding(.top, 24)
                 
                 NavigationLink(destination: BreakDownTaskView(goal: goal, texts: texts)) {
                     button
-                        .padding(.top, 20)
+                        .padding(.top, 32)
                 }
             }
             .padding(.horizontal, 20)
+            .padding(.bottom, 50)
             .foregroundStyle(.white)
         }
         .navigationBarBackButtonHidden()
