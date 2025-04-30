@@ -134,7 +134,7 @@ struct PlannerView: View {
             LazyVGrid(columns: columns, spacing: 24) {
                 ForEach(days.indices, id: \.self) { index in
                     if days[index] > 0 {
-                        dayItem(day: Date.date(year: year, month: month, day: days[index]), isEmpty: true, selectedDate: $selectedDate)
+                        dayItem(day: Date.date(year: year, month: month, day: days[index]), isEmpty: tasks.filter({ ($0.type == TaskType.quick.text || $0.type == TaskType.todo.text) && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: Date.date(year: year, month: month, day: days[index])) }).isEmpty, selectedDate: $selectedDate)
                     } else {
                         Rectangle()
                             .foregroundStyle(.clear)
