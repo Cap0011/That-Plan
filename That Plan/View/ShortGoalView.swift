@@ -71,10 +71,14 @@ struct ShortGoalView: View {
                 finishButton
                     .padding(.top, 12)
                     .onTapGesture {
-                        tasks.insert(newText, at: 0)
-                        newText = ""
-                        isExpanded.toggle()
-                        isFocused = false
+                        if newText.isEmpty {
+                            isPopupPresented.toggle()
+                        } else {
+                            tasks.insert(newText, at: 0)
+                            newText = ""
+                            isExpanded.toggle()
+                            isFocused = false
+                        }
                     }
             }
             
