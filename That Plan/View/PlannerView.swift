@@ -155,6 +155,9 @@ struct PlannerView: View {
         }
         .onChange(of: month) { _ in
             days = Array(repeating: 0, count: calendar.component(.weekday, from: Date.date(year: year, month: month, day: 1)) - 1) + Array(calendar.range(of: .day, in: .month, for: Date.date(year: year, month: month, day: 1)) ?? 1..<30)
+            if selectedDate.get(.month) != month {
+                selectedDate = Date.date(year: year, month: month, day: 1)
+            }
         }
         .readSize { size in
             calendarSize = size.width - 50
