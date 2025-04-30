@@ -32,10 +32,16 @@ struct TabbarView: View {
         @Binding var selectedTab: Tab
         
         var body: some View {
-            VStack(spacing: 4) {
-                Image(type.imageName + (selectedTab != type ? "_un" : ""))
-                Text(type.title).font(.system(size: 12)).foregroundStyle(selectedTab != type ? Color.gray300 : Color.gray900)
+            VStack(spacing: 6) {
+                Image(type.imageName)
+                    .renderingMode(.template)
+                    .foregroundStyle(selectedTab != type ? .gray100 : Utility.mainColor)
+                
+                Text(type.title)
+                    .font(.custom("Pretendard-Medium", size: 12))
+                    .foregroundStyle(selectedTab != type ? .gray400 : Utility.mainColor)
                     .frame(maxWidth: .infinity)
+                    .frame(height: 12)
             }
             .onTapGesture {
                 selectedTab = type

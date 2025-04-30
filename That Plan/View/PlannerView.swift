@@ -89,11 +89,11 @@ struct PlannerView: View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 Text(months[month - 1])
-                    .foregroundStyle(.monthgreen)
+                    .foregroundStyle(Utility.mainColor)
                     .font(.EBGaramond23)
                 
                 Text(String(year))
-                    .foregroundStyle(.yeargreen)
+                    .foregroundStyle(Utility.mainColor.opacity(0.7))
                     .font(.charisSIL15)
                     .offset(y: 2)
                     .padding(.leading, 8)
@@ -147,7 +147,7 @@ struct PlannerView: View {
         .padding(.top, 20)
         .padding(.horizontal, 24)
         .padding(.bottom, 26)
-        .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(.boxbackground))
+        .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(Utility.mainColor.opacity(0.05)))
         .onAppear {
             month = selectedDate.get(.month)
             year = selectedDate.get(.year)
@@ -226,7 +226,7 @@ struct PlannerView: View {
                     if Calendar.current.isDateInToday(day) {
                         Circle()
                             .frame(width: 27, height: 27)
-                            .foregroundStyle(.monthgreen)
+                            .foregroundStyle(Utility.mainColor)
                             .offset(y: 1)
                     }
                     
@@ -239,14 +239,14 @@ struct PlannerView: View {
                 if !isEmpty {
                     Circle()
                         .frame(width: 6, height: 6)
-                        .foregroundStyle(.dotlightgreen)
+                        .foregroundStyle(Utility.mainColor.opacity(0.5))
                         .offset(y: 10)
                 }
                 
                 if Calendar.current.isDate(day, inSameDayAs: selectedDate) {
                     Circle()
                         .frame(width: 6, height: 6)
-                        .foregroundStyle(.monthgreen)
+                        .foregroundStyle(Utility.mainColor)
                         .offset(y: 10)
                 }
             }

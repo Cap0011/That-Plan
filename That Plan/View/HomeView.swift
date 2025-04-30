@@ -21,13 +21,15 @@ struct HomeView: View {
         VStack(spacing: 0) {
             HStack {
                 Image("xrOL3O")
+                    .renderingMode(.template)
+                    .foregroundStyle(Utility.mainColor)
                 
                 Spacer()
                 
                 NavigationLink(destination: AddView()) {
                     Image("add")
                         .frame(width: 23, height: 23)
-                        .clipShape(Rectangle())
+                        .contentShape(Rectangle())
                 }
             }
             .padding(.horizontal, 20)
@@ -88,7 +90,8 @@ struct HomeView: View {
             NavigationLink(destination: DailyRoutineView()) {
                 HStack(spacing: 5) {
                     Text("Daily")
-                        .foregroundStyle(.dailygreen)
+                        .foregroundStyle(.gray900)
+                    
                     Image("chevron_right")
                         .offset(y: 2)
                 }
@@ -108,7 +111,7 @@ struct HomeView: View {
             }
             .padding(.horizontal, 17)
             .padding(.vertical, 18)
-            .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
+            .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(Utility.mainColor.opacity(0.05)))
             .padding(.top, 10)
         }
     }
@@ -182,8 +185,15 @@ struct HomeView: View {
         var body: some View {
             ZStack(alignment: .center) {
                 if isItToday {
-                    Image("dateBackground")
-                        .offset(y: 5)
+                    UnevenRoundedRectangle(cornerRadii: .init(
+                        topLeading: 5.0,
+                        bottomLeading: 25.0,
+                        bottomTrailing: 25.0,
+                        topTrailing: 5.0),
+                                           style: .continuous)
+                    .foregroundStyle(Utility.mainColor)
+                    .frame(width: 37, height: 58)
+                    .offset(y: 5)
                 }
                 VStack(spacing: 2) {
                     Text(day)
@@ -228,6 +238,8 @@ struct ChecklistItem: View {
     var body: some View {
         HStack(spacing: 0) {
             Image(isChecked ? "checked" : "unchecked")
+                .renderingMode(.template)
+                .foregroundStyle(isChecked ? Utility.mainColor : .background1)
                 .onTapGesture {
                     isChecked.toggle()
                 }
