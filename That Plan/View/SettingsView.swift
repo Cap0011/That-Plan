@@ -7,19 +7,17 @@
 
 import SwiftUI
 
-struct SettingsView: View {
+struct SettingsView: View {    
+    let titles = ["Theme & Color", "Terms of Service & Privacy Policy", "Announcements", "Notification Settings"]
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SettingRow(title: "Theme & Color")
-            
-            SettingRow(title: "Terms of Service & Privacy Policy")
-            
-            SettingRow(title: "Announcements")
-            
-            SettingRow(title: "Notification Settings")
-            
-            appVersionRow
-            
+            ForEach(titles.indices, id: \.self) { index in
+                NavigationLink(destination: destinationView(for: index)) {
+                    SettingRow(title: titles[index])
+                }
+            }
+
             Spacer()
         }
         .padding(.top, 110)
@@ -82,7 +80,16 @@ struct SettingsView: View {
         }
     }
     
-    func getAppVersion() -> String {
+    private func destinationView(for index: Int) -> AnyView {
+        switch index {
+        case 0:
+            return AnyView(ColorSettingView())
+        default:
+            return AnyView(HomeView())
+        }
+    }
+    
+    private func getAppVersion() -> String {
         if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             return appVersion
         }

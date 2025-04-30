@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct Utility {
-    static let mainColor: Color = .main1
+    static var mainColor: Color {
+        return Color("Main\(UserDefaults.standard.integer(forKey: "colorIndex"))")
+    }
     
     static func formattedTime(hour: Int, minute: Int) -> String {
         let ampm = hour >= 12 ? "pm" : "am"

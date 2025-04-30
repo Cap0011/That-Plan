@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TabbarView: View {
+    @AppStorage("colorIndex") private var colorIndex: Int = 0
     @Binding var selectedTab: Tab
     
     var body: some View {
@@ -25,6 +26,7 @@ struct TabbarView: View {
             .padding(.top, 7)
             .padding(.horizontal, 20)
         }
+        .id(colorIndex)
     }
     
     struct TabbarItem: View {
