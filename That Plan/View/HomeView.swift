@@ -80,7 +80,7 @@ struct HomeView: View {
             }
             .scrollIndicators(.hidden)
         }
-        .padding(.top, 60)
+        .padding(.top, 70)
         .background(.white)
         .toast(message: "Task saved successfully!", isShowing: $alertManager.isShowingToast, duration: Toast.short)
     }

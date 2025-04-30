@@ -13,12 +13,9 @@ struct PlannerView: View {
         entity: CDTask.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \CDTask.createdAt, ascending: true)]
     ) var tasks: FetchedResults<CDTask>
-    
-    @State private var month = 1
-    @State private var year = 0
+
     @State private var selectedDate = Date()
     @State private var calendarSize: CGFloat = .zero
-    @State private var days = Array(1...30)
     
     let calendar = Calendar.current
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 7)
@@ -46,7 +43,7 @@ struct PlannerView: View {
             }
             .padding(.horizontal, 20)
             
-            planner
+            CalendarView(selectedDate: $selectedDate, tasks: Array(tasks))
                 .padding(.top, 25)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 22)
@@ -81,87 +78,8 @@ struct PlannerView: View {
                 .scrollIndicators(.hidden)
             }
         }
-        .padding(.top, 60)
+        .padding(.top, 70)
         .background(.white)
-    }
-    
-    var planner: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 0) {
-                Text(months[month - 1])
-                    .foregroundStyle(Utility.mainColor)
-                    .font(.EBGaramond23)
-                
-                Text(String(year))
-                    .foregroundStyle(Utility.mainColor.opacity(0.7))
-                    .font(.charisSIL15)
-                    .offset(y: 2)
-                    .padding(.leading, 8)
-                
-                Spacer()
-                
-                Image("chevron_backward")
-                    .frame(width: 23, height: 23)
-                    .onTapGesture {
-                        if month == 1 {
-                            year -= 1
-                        }
-                        month = (month + 10) % 12 + 1
-                    }
-                
-                Image("chevron_forward")
-                    .frame(width: 23, height: 23)
-                    .padding(.leading, 10)
-                    .onTapGesture {
-                        if month == 12 {
-                            year += 1
-                        }
-                        month = month % 12 + 1
-                    }
-            }
-            .padding(.bottom, 15)
-            
-            HStack(spacing: (calendarSize - 24 * 7) / 6) {
-                ForEach(weekdays, id: \.self) { weekday in
-                    Text(weekday)
-                        .kerning(0.2)
-                        .font(.facultyGlyphic10)
-                        .foregroundStyle(.weekdaygray)
-                        .frame(width: 24)
-                }
-            }
-            
-            LazyVGrid(columns: columns, spacing: 24) {
-                ForEach(days.indices, id: \.self) { index in
-                    if days[index] > 0 {
-                        dayItem(day: Date.date(year: year, month: month, day: days[index]), isEmpty: tasks.filter({ ($0.type == TaskType.quick.text || $0.type == TaskType.todo.text) && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: Date.date(year: year, month: month, day: days[index])) }).isEmpty, selectedDate: $selectedDate)
-                    } else {
-                        Rectangle()
-                            .foregroundStyle(.clear)
-                    }
-                }
-            }
-            .padding(.horizontal, -4)
-            .padding(.top, 18)
-        }
-        .padding(.top, 20)
-        .padding(.horizontal, 24)
-        .padding(.bottom, 26)
-        .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(Utility.mainColor.opacity(0.05)))
-        .onAppear {
-            month = selectedDate.get(.month)
-            year = selectedDate.get(.year)
-            days = Array(repeating: 0, count: calendar.component(.weekday, from: Date.date(year: year, month: month, day: 1)) - 1) + Array(calendar.range(of: .day, in: .month, for: Date.date(year: year, month: month, day: 1)) ?? 1..<30)
-        }
-        .onChange(of: month) { _ in
-            days = Array(repeating: 0, count: calendar.component(.weekday, from: Date.date(year: year, month: month, day: 1)) - 1) + Array(calendar.range(of: .day, in: .month, for: Date.date(year: year, month: month, day: 1)) ?? 1..<30)
-            if selectedDate.get(.month) != month {
-                selectedDate = Date.date(year: year, month: month, day: 1)
-            }
-        }
-        .readSize { size in
-            calendarSize = size.width - 50
-        }
     }
     
     var quick: some View {
@@ -211,48 +129,6 @@ struct PlannerView: View {
                 Spacer()
             }
             .padding(.top, 10)
-        }
-    }
-    
-    struct dayItem: View {
-        let day: Date
-        let isEmpty: Bool
-        
-        @Binding var selectedDate: Date
-        
-        var body: some View {
-            ZStack(alignment: .bottom) {
-                ZStack {
-                    if Calendar.current.isDateInToday(day) {
-                        Circle()
-                            .frame(width: 27, height: 27)
-                            .foregroundStyle(Utility.mainColor)
-                            .offset(y: 1)
-                    }
-                    
-                    Text("\(day.get(.day))")
-                        .font(.charisSIL16)
-                        .foregroundStyle(Calendar.current.isDateInToday(day) ? .white : .daygray)
-                        .frame(height: 24)
-                }
-                
-                if !isEmpty {
-                    Circle()
-                        .frame(width: 6, height: 6)
-                        .foregroundStyle(Utility.mainColor.opacity(0.5))
-                        .offset(y: 10)
-                }
-                
-                if Calendar.current.isDate(day, inSameDayAs: selectedDate) {
-                    Circle()
-                        .frame(width: 6, height: 6)
-                        .foregroundStyle(Utility.mainColor)
-                        .offset(y: 10)
-                }
-            }
-            .onTapGesture {
-                selectedDate = day
-            }
         }
     }
 }
