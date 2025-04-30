@@ -30,7 +30,7 @@ struct TabView: View {
                     case .planner:
                         PlannerView()
                     case .settings:
-                        PlannerView()
+                        SettingsView()
                     }
                     
                     Spacer()
