@@ -30,6 +30,7 @@ struct HomeView: View {
                         .clipShape(Rectangle())
                 }
             }
+            .padding(.horizontal, 20)
             
             HStack(spacing: 20) {
                 ForEach(getDatesfromThisWeek(), id: \.self) { date in
@@ -44,6 +45,7 @@ struct HomeView: View {
             ScrollView(.vertical) {
                 if !tasks.filter({ $0.type == TaskType.daily.text }).isEmpty {
                     daily
+                        .padding(.horizontal, 20)
                 }
                 
                 if tasks.filter({ Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
@@ -77,7 +79,6 @@ struct HomeView: View {
             .scrollIndicators(.hidden)
         }
         .padding(.top, 60)
-        .padding(.horizontal, 20)
         .background(.white)
         .toast(message: "Task saved successfully!", isShowing: $alertManager.isShowingToast, duration: Toast.short)
     }
@@ -117,27 +118,21 @@ struct HomeView: View {
             Text("Quick")
                 .font(.EBGaramond19)
                 .foregroundStyle(.gray900)
+                .padding(.horizontal, 20)
             
             HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(tasks.filter { $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }, id: \.id) { task in
                         ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
                             task.isCompleted = newValue
                             try? viewContext.save()
                         }), time: nil)
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                viewContext.delete(task)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
                     }
                 }
                 
                 Spacer()
             }
-            .padding(.top, 20)
+            .padding(.top, 10)
         }
     }
     
@@ -146,9 +141,10 @@ struct HomeView: View {
             Text("Today")
                 .foregroundStyle(.black)
                 .font(.EBGaramond19)
+                .padding(.horizontal, 20)
             
             HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(Utility.sortedTasks(tasks: Array(tasks), date: selectedDate), id: \.id) { task in
                         ChecklistItem(content: task.contents ?? "", isChecked: Binding( get: { task.isCompleted }, set: { newValue in
                             task.isCompleted = newValue
@@ -159,7 +155,7 @@ struct HomeView: View {
                 
                 Spacer()
             }
-            .padding(.top, 20)
+            .padding(.top, 10)
         }
     }
     
@@ -223,6 +219,8 @@ struct ChecklistItem: View {
     @Binding var isChecked: Bool
     let time: String?
     
+    @GestureState private var isPressed = false
+    
     var body: some View {
         HStack(spacing: 0) {
             Image(isChecked ? "checked" : "unchecked")
@@ -243,6 +241,16 @@ struct ChecklistItem: View {
                     .foregroundColor(.timegray)
             }
         }
+        .contentShape(Rectangle())
+        .padding(.vertical, 10)
+        .padding(.horizontal, 24)
+        .background(isPressed ? .background0 : .clear)
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .updating($isPressed) { _, state, _ in
+                    state = true
+                }
+        )
     }
 }
 

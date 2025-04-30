@@ -7,39 +7,38 @@
 
 import SwiftUI
 
-struct NoteDetailView: View {
+struct DetailView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @Environment(\.managedObjectContext) private var viewContext
-    @ObservedObject var note: CDTask
-    
-    @State private var text = ""
-    @FocusState private var isFocused: Bool
-    
+    @ObservedObject var task: CDTask
+        
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(note.type ?? "")
+            Text(task.type ?? "")
                 .font(.EBGaramond24)
                 .foregroundStyle(.black)
             
-            Text(TaskType.fromText(note.type ?? "")?.description ?? "Empty")
-                .font(.cabin16)
-                .kerning(0.2)
-                .foregroundStyle(.gray800)
-                .padding(.top, 10)
+            if task.type == TaskType.future.text {
+                Text(TaskType.fromText(task.type ?? "")?.description ?? "")
+                    .font(.cabin16)
+                    .kerning(0.2)
+                    .foregroundStyle(.gray800)
+                    .padding(.top, 10)
+            }
             
-            TextField(text, text: $text)
-                .focused($isFocused)
-                .submitLabel(.done)
+            Text(task.contents ?? "")
                 .font(.cabin15)
                 .kerning(0.2)
                 .foregroundStyle(.gray800)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
+                .padding(.vertical, 18)
                 .padding(.horizontal, 16)
-                .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground).frame(height: 50))
-                .frame(height: 50)
+                .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
                 .padding(.top, 16)
             
-            if note.type == TaskType.future.text {
-                NavigationLink(destination: SortingView(text: text)) {
+            if task.type == TaskType.future.text {
+                NavigationLink(destination: SortingView(text: task.contents ?? "")) {
                     sortTasksButton
                         .padding(.top, 66)
                 }
@@ -49,14 +48,7 @@ struct NoteDetailView: View {
         }
         .padding(.top, 15)
         .padding(.horizontal, 20)
-        .contentShape(Rectangle())
         .background(.white)
-        .task {
-            text = note.contents ?? ""
-        }
-        .onTapGesture {
-            isFocused = false
-        }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -71,21 +63,11 @@ struct NoteDetailView: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                Text(isFocused ? "Done" : "Edit")
-                    .font(.EBGaramond19)
-                    .foregroundStyle(.black)
-                    .onTapGesture {
-                        if isFocused {
-                            note.contents = text
-                            
-                            do {
-                                try viewContext.save()
-                            } catch {
-                                print("Error saving context: \(error)")
-                            }
-                        }
-                        isFocused.toggle()
-                    }
+                NavigationLink(destination: EditView(task: task)) {
+                    Text("Edit")
+                        .font(.EBGaramond19)
+                        .foregroundStyle(.black)
+                }
             }
         }
     }
@@ -95,7 +77,7 @@ struct NoteDetailView: View {
             ZStack(alignment: .trailing) {
                 RoundedRectangle(cornerRadius: 12)
                     .frame(height: 50)
-                    .foregroundStyle(.monthgreen)
+                    .foregroundStyle(Utility.mainColor)
                 
                 Image(systemName: "chevron.right")
                     .font(.system(size: 12))

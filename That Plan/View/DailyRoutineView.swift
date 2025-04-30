@@ -23,7 +23,7 @@ struct DailyRoutineView: View {
             ScrollView {
                 VStack(spacing: 9) {
                     ForEach(Array(routines), id: \.id) { routine in
-                        NavigationLink(destination: RoutineEditView(routine: routine)) {
+                        NavigationLink(destination: EditView(task: routine)) {
                             if let contents = routine.contents {
                                 TaskItemView(type: "Daily", content: contents)
                             }

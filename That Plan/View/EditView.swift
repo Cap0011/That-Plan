@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct RoutineEditView: View {
+struct EditView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @Environment(\.managedObjectContext) private var viewContext
     
-    @State var routine: CDTask
+    @State var task: CDTask
     @State private var text = ""
     @FocusState private var isFocused: Bool
     
@@ -21,16 +21,16 @@ struct RoutineEditView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             TextEditor(text: $text)
+                .focused($isFocused)
                 .kerning(0.2)
                 .font(.cabin17)
                 .foregroundStyle(.black)
                 .scrollContentBackground(.hidden)
                 .lineSpacing(5)
                 .frame(height: 154)
-                .padding(.vertical, 18)
-                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 12)
                 .background(RoundedRectangle(cornerRadius: 12).foregroundStyle(.boxbackground))
-                .focused($isFocused)
             
             finishButton
                 .padding(.top, 24)
@@ -38,7 +38,7 @@ struct RoutineEditView: View {
                     if text.isEmpty {
                         isEmptyPopupPresented.toggle()
                     } else {
-                        routine.contents = text
+                        task.contents = text
                         try? viewContext.save()
                         Utility.resetToRootView()
                         AlertManager.shared.isShowingToast = true
@@ -55,7 +55,7 @@ struct RoutineEditView: View {
         }
         .popup(isPresented: $isDeletePopupPresented) {
             DeletePopupView(isPresented: $isDeletePopupPresented) {
-                viewContext.delete(routine)
+                viewContext.delete(task)
                 Utility.resetToRootView()
             }
         }
@@ -65,7 +65,7 @@ struct RoutineEditView: View {
         }
         .task {
             isFocused = true
-            text = routine.contents ?? ""
+            text = task.contents ?? ""
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -156,10 +156,11 @@ struct DeletePopupView: View {
                 .font(.custom("Pretendard-SemiBold", size: 19))
                 .foregroundStyle(.gray800)
             
-            Text("Are you sure you want\nto delete this item?")
+            Text("Are you sure you want to\n delete this item?")
                 .font(.custom("Pretendard-Regular", size: 16))
                 .foregroundStyle(.gray700)
                 .padding(.top, 12)
+                .multilineTextAlignment(.center)
             
             HStack(spacing: 0) {
                 Text("Cancel")
