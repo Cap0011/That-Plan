@@ -24,6 +24,7 @@ extension Font {
     static let EBGaramond28: Font = .custom("EBGaramond-Bold", size: 28)
     static let EBGaramondMedium16: Font = .custom("EBGaramond-Medium", size: 16)
     static let EBGaramondMedium19: Font = .custom("EBGaramond-Medium", size: 19)
+    static let EBGaramondMedium28: Font = .custom("EBGaramond-Medium", size: 28)
     static let EBGaramondSemibold17: Font = .custom("EBGaramond-SemiBold", size: 17)
     static let EBGaramondSemibold19: Font = .custom("EBGaramond-SemiBold", size: 19)
     static let facultyGlyphic10: Font = .custom("FacultyGlyphic-Regular", size: 10)
