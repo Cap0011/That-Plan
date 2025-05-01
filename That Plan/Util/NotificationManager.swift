@@ -53,7 +53,7 @@ final class NotificationManager {
     }
     
     func openNotificationSettings() {
-        guard let url = URL(string: UIApplication.openSettingsURLString),
+        guard let url = URL(string: UIApplication.openNotificationSettingsURLString),
               UIApplication.shared.canOpenURL(url) else { return }
         UIApplication.shared.open(url)
     }

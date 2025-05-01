@@ -23,6 +23,8 @@ struct SetADateView: View {
     @State private var isCalendarOpen = false
     @State private var isTimeOpen = false
     
+    @State private var isNotificationSettingOpen = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Set a date")
@@ -65,6 +67,32 @@ struct SetADateView: View {
         .onChange(of: time) { newValue in
             hour = newValue.get(.hour)
             minute = newValue.get(.minute)
+        }
+        .onChange(of: isNotificationOn) { newValue in
+            Task {
+                if await !NotificationManager.shared.checkNotificationAuthorization() && newValue {
+                    NotificationManager.shared.requestAuthorization { granted in
+                        if !granted {
+                            isNotificationOn = false
+                            NotificationManager.shared.openNotificationSettings()
+                            isNotificationSettingOpen = true
+                        }
+                    }
+                }
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            Task {
+                if await !NotificationManager.shared.checkNotificationAuthorization() {
+                    isNotificationOn = false
+                }
+                
+                if await NotificationManager.shared.checkNotificationAuthorization() && isNotificationSettingOpen {
+                    isNotificationOn = true
+                }
+                
+                isNotificationSettingOpen = false
+            }
         }
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
@@ -248,6 +276,10 @@ struct SetADateView: View {
         }
         newTask.isNotificationOn = (isNotificationOn == true)
         newTask.isCompleted = false
+        
+        if isNotificationOn {
+            NotificationManager.shared.scheduleNotification(title: "That Plan", body: "Time to tackle today's tasks! Check them out.", date: Date.date(year: date.get(.year), month: date.get(.month), day: date.get(.day), hour: hour != nil ? hour! : 7, minute: minute != nil ? minute! : 0))
+        }
         
         do {
             try viewContext.save()

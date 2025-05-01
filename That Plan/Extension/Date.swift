@@ -34,4 +34,12 @@ extension Date {
         }
         return Date()
     }
+    
+    static func date(year: Int, month: Int, day: Int, hour: Int, minute: Int) -> Date {
+        let components = DateComponents(year: year, month: month, day: day, hour: hour, minute: minute)
+        if let customDate = Calendar.current.date(from: components) {
+            return customDate
+        }
+        return Date()
+    }
 }
