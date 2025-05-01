@@ -17,6 +17,8 @@ struct SettingsView: View {
                     SettingRow(title: titles[index])
                 }
             }
+            
+            appVersionRow
 
             Spacer()
         }

@@ -18,6 +18,24 @@ struct NotificationSettingView: View {
             
             Spacer()
         }
+        .task {
+            loadNotificationAuthorization()
+        }
+        .onChange(of: isDailyOn) { newValue in
+            if newValue {
+                NotificationManager.shared.requestAuthorization { granted in
+                    if !granted {
+                        NotificationManager.shared.openNotificationSettings()
+                    }
+                    loadNotificationAuthorization()
+                }
+            } else {
+                NotificationManager.shared.openNotificationSettings()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            loadNotificationAuthorization()
+        }
         .padding(.top, 20)
         .padding(.horizontal, 20)
         .background(.white)
@@ -67,6 +85,12 @@ struct NotificationSettingView: View {
                 .padding(.vertical, 20)
             }
             .contentShape(Rectangle())
+        }
+    }
+    
+    func loadNotificationAuthorization() {
+        Task {
+            isDailyOn = await NotificationManager.shared.checkNotificationAuthorization()
         }
     }
 }

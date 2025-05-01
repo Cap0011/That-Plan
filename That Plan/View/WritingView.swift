@@ -10,7 +10,7 @@ import SwiftUI
 struct WritingView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    @State private var note: Task?
+    @State private var note: TaskData?
     @State private var text = ""
     @FocusState private var isFocused: Bool
     @State private var isPopupPresented = false

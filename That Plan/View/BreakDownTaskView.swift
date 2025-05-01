@@ -14,7 +14,7 @@ struct BreakDownTaskView: View {
     let goal: String
     let texts: [String]
     
-    @State private var tasks = [Task]()
+    @State private var tasks = [TaskData]()
     
     @State private var pageIndex = 0
     @State private var selectedIndex: Int?
@@ -39,7 +39,7 @@ struct BreakDownTaskView: View {
         }
         .task {
             for index in texts.indices {
-                tasks.append(Task(id: UUID(), type: "", contents: texts[index]))
+                tasks.append(TaskData(id: UUID(), type: "", contents: texts[index]))
             }
         }
         .onChange(of: pageIndex / 2) { _ in
