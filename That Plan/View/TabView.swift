@@ -11,7 +11,7 @@ struct TabView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @State private var tab: Tab = .today
-    @State private var isLaunching = true
+    @State var isLaunching = true
     
     var body: some View {
         if isLaunching {

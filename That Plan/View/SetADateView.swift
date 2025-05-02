@@ -278,7 +278,7 @@ struct SetADateView: View {
         newTask.isCompleted = false
         
         if isNotificationOn {
-            NotificationManager.shared.scheduleNotification(title: "That Plan", body: "Time to tackle today's tasks! Check them out.", date: Date.date(year: date.get(.year), month: date.get(.month), day: date.get(.day), hour: hour != nil ? hour! : 7, minute: minute != nil ? minute! : 0))
+            NotificationManager.shared.scheduleNotification(id: newTask.id ?? UUID(), title: "That Plan", body: "Time to tackle today's tasks! Check them out.", date: Date.date(year: date.get(.year), month: date.get(.month), day: date.get(.day), hour: hour ?? 7, minute: minute ?? 0))
         }
         
         do {

@@ -24,10 +24,13 @@ struct BreakDownTaskView: View {
     @State private var hour: Int?
     @State private var minute: Int?
     @State private var isNotificationOn = false
+    
     @State private var isCalendarOpen = false
     @State private var isTimeOpen = false
     
     @State private var isPopupPresented = false
+    
+    @State private var isNotificationSettingOpen = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -37,6 +40,8 @@ struct BreakDownTaskView: View {
                 dateSelection
             }
         }
+        .padding(.horizontal, 20)
+        .background(.white)
         .task {
             for index in texts.indices {
                 tasks.append(TaskData(id: UUID(), type: "", contents: texts[index]))
@@ -49,11 +54,35 @@ struct BreakDownTaskView: View {
             hour = newValue.get(.hour)
             minute = newValue.get(.minute)
         }
-        .padding(.horizontal, 20)
+        .onChange(of: isNotificationOn) { newValue in
+            Task {
+                if await !NotificationManager.shared.checkNotificationAuthorization() && newValue {
+                    NotificationManager.shared.requestAuthorization { granted in
+                        if !granted {
+                            isNotificationOn = false
+                            NotificationManager.shared.openNotificationSettings()
+                            isNotificationSettingOpen = true
+                        }
+                    }
+                }
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            Task {
+                if await !NotificationManager.shared.checkNotificationAuthorization() {
+                    isNotificationOn = false
+                }
+                
+                if await NotificationManager.shared.checkNotificationAuthorization() && isNotificationSettingOpen {
+                    isNotificationOn = true
+                }
+                
+                isNotificationSettingOpen = false
+            }
+        }
         .popup(isPresented: $isPopupPresented) {
             selectPopup
         }
-        .background(.white)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -91,8 +120,14 @@ struct BreakDownTaskView: View {
                             if pageIndex % 2 == 1 {
                                 updateTask()
                                 resetValues()
+                                pageIndex += 1
+                            } else {
+                                if selectedIndex == nil {
+                                    isPopupPresented.toggle()
+                                } else {
+                                    pageIndex += 1
+                                }
                             }
-                            pageIndex += 1
                         }
                     }
             }
@@ -384,9 +419,13 @@ struct BreakDownTaskView: View {
     }
     
     private func resetValues() {
+        isCalendarOpen = false
+        isTimeOpen = false
+        
         if tasks.isEmpty {
             selectedIndex = nil
             date = Date()
+            time = Date()
             hour = nil
             minute = nil
             isNotificationOn = false
@@ -395,9 +434,10 @@ struct BreakDownTaskView: View {
             if task.type == "" {
                 selectedIndex = nil
             } else {
-                selectedIndex = task.type == TaskType.quick.text ? 0 : 1
+                selectedIndex = (task.type == TaskType.quick.text) ? 0 : 1
             }
             date = task.date ?? Date()
+            time = Date.date(year: date.get(.year), month: date.get(.month), day: date.get(.day), hour: task.hour ?? Date().get(.hour), minute: task.minute ?? Date().get(.minute))
             hour = task.hour
             minute = task.minute
             isNotificationOn = task.isNotificationOn ?? false
@@ -422,8 +462,9 @@ struct BreakDownTaskView: View {
             newTask.isNotificationOn = (task.isNotificationOn == true)
             newTask.isCompleted = false
             
-            //TODO: ParentID?
-            
+            if task.isNotificationOn != nil && task.isNotificationOn! {
+                NotificationManager.shared.scheduleNotification(id: task.id, title: "That Plan", body: "Time to tackle today's tasks! Check them out.", date: Date.date(year: date.get(.year), month: date.get(.month), day: date.get(.day), hour: task.hour ?? 7, minute: task.minute ?? 0))
+            }
         }
         
         do {

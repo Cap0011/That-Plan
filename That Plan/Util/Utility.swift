@@ -42,7 +42,7 @@ struct Utility {
             .flatMap({ $0.windows })
             .first(where: { $0.isKeyWindow }) else { return }
         
-        window.rootViewController = UIHostingController(rootView: TabView().environment(\.managedObjectContext, CoreDataStack.shared.persistentContainer.viewContext))
+        window.rootViewController = UIHostingController(rootView: TabView(isLaunching: false).environment(\.managedObjectContext, CoreDataStack.shared.persistentContainer.viewContext))
         window.makeKeyAndVisible()
     }
 }
