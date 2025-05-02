@@ -52,6 +52,10 @@ final class NotificationManager {
         }
     }
     
+    func deleteNotification(id: UUID) {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id.uuidString])
+    }
+    
     func openNotificationSettings() {
         guard let url = URL(string: UIApplication.openNotificationSettingsURLString),
               UIApplication.shared.canOpenURL(url) else { return }

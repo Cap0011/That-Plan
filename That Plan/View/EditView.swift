@@ -55,6 +55,11 @@ struct EditView: View {
         }
         .popup(isPresented: $isDeletePopupPresented) {
             DeletePopupView(isPresented: $isDeletePopupPresented) {
+                if task.isNotificationOn {
+                    if let id = task.id {
+                        NotificationManager.shared.deleteNotification(id: id)
+                    }
+                }
                 viewContext.delete(task)
                 Utility.resetToRootView()
             }
