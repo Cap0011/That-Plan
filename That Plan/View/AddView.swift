@@ -102,7 +102,9 @@ struct AddView: View {
                 LazyVStack(alignment: .leading, spacing: 9) {
                     ForEach(tasks, id: \.id) { task in
                         if let type = task.type, let contents = task.contents {
-                            TaskItemView(type: type, content: contents)
+                            NavigationLink(destination: DetailView(task: task)) {
+                                TaskItemView(type: type, content: contents)
+                            }
                         }
                     }
                 }

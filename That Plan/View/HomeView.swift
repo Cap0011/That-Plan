@@ -65,7 +65,6 @@ struct HomeView: View {
                     Spacer()
                 } else {
                     VStack(alignment: .leading, spacing: 0) {
-                        
                         if !tasks.filter({ $0.type == TaskType.quick.text && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
                             quick
                                 .padding(.top, 34)
