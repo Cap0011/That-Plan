@@ -87,7 +87,7 @@ struct PlannerView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Quick")
                 .font(.EBGaramond19)
-                .foregroundStyle(.gray600)
+                .foregroundStyle(.black)
                 .padding(.horizontal, 20)
             
             HStack(spacing: 0) {
