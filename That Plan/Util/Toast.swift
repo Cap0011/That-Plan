@@ -17,10 +17,13 @@ struct Toast: ViewModifier {
     @Binding var isShowing: Bool
     let config: Config
     
+    @State private var offsetY: CGFloat = -100
+    
     func body(content: Content) -> some View {
         ZStack {
             content
             toastView
+                .offset(y: offsetY)
         }
     }
     
@@ -46,8 +49,13 @@ struct Toast: ViewModifier {
                 .padding(.top, 60)
                 .padding(.horizontal, 20)
                 .onAppear {
+                    withAnimation(config.animation) {
+                        offsetY = 0
+                    }
+                    
                     DispatchQueue.main.asyncAfter(deadline: .now() + config.duration) {
                         isShowing = false
+                        offsetY = -100
                     }
                 }
             }
@@ -55,7 +63,7 @@ struct Toast: ViewModifier {
             Spacer()
         }
         .animation(config.animation, value: isShowing)
-        .transition(config.transition)
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
     
     struct Config {
@@ -63,20 +71,17 @@ struct Toast: ViewModifier {
         let font: Font
         let backgroundColor: Color
         let duration: TimeInterval
-        let transition: AnyTransition
         let animation: Animation
         
         init(textColor: Color = .white,
              font: Font = .EBGaramond17,
              backgroundColor: Color = Utility.mainColor,
              duration: TimeInterval = Toast.short,
-             transition: AnyTransition = .opacity,
-             animation: Animation = .linear(duration: 0.3)) {
+             animation: Animation = .easeInOut(duration: 0.5)) {
             self.textColor = textColor
             self.font = font
             self.backgroundColor = backgroundColor
             self.duration = duration
-            self.transition = transition
             self.animation = animation
         }
     }
