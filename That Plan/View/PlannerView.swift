@@ -49,6 +49,8 @@ struct PlannerView: View {
                 .padding(.bottom, 22)
             
             if tasks.filter({ ($0.type == TaskType.quick.text || $0.type == TaskType.todo.text) && Calendar.current.isDate($0.date ?? Date(), inSameDayAs: selectedDate) }).isEmpty {
+                Spacer()
+                
                 VStack(spacing: 13) {
                     Text("No plans saved for \(Calendar.current.isDateInToday(selectedDate) ? "today" : "this day").")
                         .font(.cabinMedium16)
@@ -59,7 +61,6 @@ struct PlannerView: View {
                         .foregroundStyle(.gray500)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.top, 114)
                 
                 Spacer()
             } else {
