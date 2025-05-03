@@ -235,6 +235,7 @@ struct SortingView: View {
                 }
                 .onTapGesture {
                     isSavePopupPresented = false
+                    AlertManager.shared.isShowingToast.toggle()
                     Utility.resetToRootView()
                 }
             }
