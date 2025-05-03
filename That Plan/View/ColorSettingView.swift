@@ -42,6 +42,9 @@ struct ColorSettingView: View {
         .padding(.top, 20)
         .padding(.horizontal, 15)
         .background(.white)
+        .onChange(of: selectedIndex) { newValue in
+            changeAppIcon(for: newValue)
+        }
         .readSize { size in
             cardWidth = (size.width - 60) / 3
         }
@@ -88,6 +91,20 @@ struct ColorSettingView: View {
             }
             .onTapGesture {
                 selectedIndex = index
+            }
+        }
+    }
+    
+    func changeAppIcon(for index: Int) {
+        guard UIApplication.shared.supportsAlternateIcons else { return }
+
+        DispatchQueue.main.async {
+            UIApplication.shared.setAlternateIconName(index == 0 ? nil : "AppIcon\(index)") { error in
+                if let error = error {
+                    print("Failed to change icon: \(error.localizedDescription)")
+                } else {
+                    print("Icon changed! \(UIApplication.shared.alternateIconName)")
+                }
             }
         }
     }
