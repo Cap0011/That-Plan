@@ -74,7 +74,8 @@ struct NotificationSettingView: View {
                     Spacer()
                     
                     Image("toggle_\(isOn ? "on" : "off")")
-                        .frame(width: 23, height: 23)
+                        .resizable()
+                        .frame(width: 25, height: 25)
                         .contentShape(Rectangle())
                         .onTapGesture {
                             withAnimation {

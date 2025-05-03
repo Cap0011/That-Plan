@@ -37,6 +37,8 @@ struct TabbarView: View {
             VStack(spacing: 6) {
                 Image(type.imageName)
                     .renderingMode(.template)
+                    .resizable()
+                    .frame(width: 24, height: 24)
                     .foregroundStyle(selectedTab != type ? .gray100 : Utility.mainColor)
                 
                 Text(type.title)
