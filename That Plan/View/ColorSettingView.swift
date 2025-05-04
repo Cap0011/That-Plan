@@ -103,7 +103,7 @@ struct ColorSettingView: View {
                 if let error = error {
                     print("Failed to change icon: \(error.localizedDescription)")
                 } else {
-                    print("Icon changed! \(UIApplication.shared.alternateIconName)")
+                    print("Icon changed!")
                 }
             }
         }

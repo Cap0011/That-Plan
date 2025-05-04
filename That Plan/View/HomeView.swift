@@ -27,7 +27,7 @@ struct HomeView: View {
                 Spacer()
                 
                 NavigationLink(destination: AddView()) {
-                    Image("add")
+                    Image("plus")
                         .frame(width: 23, height: 23)
                         .contentShape(Rectangle())
                 }
@@ -237,7 +237,7 @@ struct ChecklistItem: View {
     @GestureState private var isPressed = false
     
     var body: some View {
-        HStack(spacing: 0) {
+        let base = HStack(spacing: 0) {
             Image(isChecked ? "checked" : "unchecked")
                 .renderingMode(.template)
                 .foregroundStyle(isChecked ? Utility.mainColor : .background1)
@@ -262,12 +262,18 @@ struct ChecklistItem: View {
         .padding(.vertical, 10)
         .padding(.horizontal, 24)
         .background(isPressed ? .background0 : .clear)
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .updating($isPressed) { _, state, _ in
-                    state = true
-                }
-        )
+        
+        if #available(iOS 18, *) {
+            base
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 0)
+                        .updating($isPressed) { _, state, _ in
+                            state = true
+                        }
+                )
+        } else {
+            base
+        }
     }
 }
 
